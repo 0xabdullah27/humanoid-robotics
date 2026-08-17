@@ -29,13 +29,13 @@ const config: Config = {
   ],
 
   // Set the production url of your site here
-  url: 'https://abdullah2127x.github.io',
+  url: 'https://0xabdullah27.github.io',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: '/human-robotics-book/',
 
   // GitHub pages deployment config.
-  organizationName: 'abdullah2127x', // Usually your GitHub org/user name.
+  organizationName: '0xabdullah27', // Usually your GitHub org/user name.
   projectName: 'human-robotics-book', // Usually your repo name.
 
   onBrokenLinks: 'throw',
@@ -56,7 +56,7 @@ const config: Config = {
           sidebarPath: './sidebars.ts',
           // Please change this to your repo.
           editUrl:
-            'https://github.com/abdullah2127x/human-robotics-book/edit/main/book-source/docs/',
+            'https://github.com/0xabdullah27/human-robotics-book/edit/main/book-source/docs/',
         },
         blog: false, // Disable blog functionality for the book
         theme: {
@@ -86,7 +86,7 @@ const config: Config = {
           label: 'Book',
         },
         {
-          href: 'https://github.com/abdullah2127x/human-robotics-book',
+          href: 'https://github.com/0xabdullah27/human-robotics-book',
           label: 'GitHub',
           position: 'right',
         },
@@ -109,7 +109,7 @@ const config: Config = {
           items: [
             {
               label: 'GitHub',
-              href: 'https://github.com/abdullah2127x/human-robotics-book',
+              href: 'https://github.com/0xabdullah27/human-robotics-book',
             },
           ],
         },
