@@ -139,10 +139,14 @@ export const ChatWidget: React.FC<ChatWidgetProps> = ({ apiEndpoint }) => {
         content: m.content,
       }));
 
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
+
     try {
       const response = await fetch(`${API_BASE}/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,
         body: JSON.stringify({
           messages: validHistory,
           question: text,
@@ -150,8 +154,14 @@ export const ChatWidget: React.FC<ChatWidgetProps> = ({ apiEndpoint }) => {
         }),
       });
 
+      clearTimeout(timeoutId);
+
+      if (response.status === 429) {
+        throw new Error('RATE_LIMIT');
+      }
+
       if (!response.ok) {
-        throw new Error(`Server returned HTTP ${response.status}`);
+        throw new Error(`HTTP_${response.status}`);
       }
 
       const data = await response.json();
@@ -167,17 +177,30 @@ export const ChatWidget: React.FC<ChatWidgetProps> = ({ apiEndpoint }) => {
 
       setMessages((prev) => [...prev, botMsg]);
     } catch (error: any) {
+      clearTimeout(timeoutId);
       console.error('Chat Error:', error);
+
+      let userFriendlyMessage = '⚠️ Unable to connect to the AI Assistant. Please check your internet connection or try again shortly.';
+
+      if (error?.name === 'AbortError') {
+        userFriendlyMessage = '⏱️ **Request Timed Out**: The AI service took longer than 15 seconds to respond. Please try again with a shorter question.';
+      } else if (error?.message === 'RATE_LIMIT') {
+        userFriendlyMessage = '⏳ **Slow Down**: You have asked several questions recently. Please wait a few moments before asking another.';
+      } else if (error?.message?.startsWith('HTTP_5')) {
+        userFriendlyMessage = '🔧 **Server Error**: The backend encountered an unexpected error. Please try again in a moment.';
+      }
+
       setMessages((prev) => [
         ...prev,
         {
           id: `bot_err_${Date.now()}`,
           role: 'bot',
-          content: '⚠️ Unable to connect to the AI service. Please verify the backend is running at `' + API_BASE + '`.',
+          content: userFriendlyMessage,
           timestamp: Date.now(),
         },
       ]);
     } finally {
+      clearTimeout(timeoutId);
       setIsLoading(false);
     }
   };
