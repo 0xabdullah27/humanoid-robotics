@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface SidebarProps {
   activeSection: string;
@@ -17,18 +17,13 @@ const navItems = [
   {
     title: 'Core Features',
     items: [
-      { id: 'arrow-functions', label: 'Arrow Functions', icon: 'arrow' },
-      { id: 'destructuring', label: 'Destructuring', icon: 'box' },
-      { id: 'spread-rest', label: 'Spread & Rest', icon: 'circle' },
-      { id: 'classes', label: 'Classes', icon: 'user' }
-    ]
-  },
-  {
-    title: 'Modules & Async',
-    items: [
-      { id: 'modules', label: 'Modules', icon: 'layers' },
-      { id: 'promises', label: 'Promises', icon: 'clock' },
-      { id: 'async-await', label: 'Async/Await', icon: 'file' }
+      { id: 'let-const', label: 'Let & Const', icon: 'arrow' },
+      { id: 'arrow-functions', label: 'Arrow Functions', icon: 'box' },
+      { id: 'destructuring', label: 'Destructuring', icon: 'layers' },
+      { id: 'rest-spread', label: 'Rest & Spread', icon: 'sliders' },
+      { id: 'classes', label: 'Classes', icon: 'cpu' },
+      { id: 'modules', label: 'Modules', icon: 'code' },
+      { id: 'promises-async', label: 'Promises & Async/Await', icon: 'zap' }
     ]
   },
   {
@@ -41,7 +36,7 @@ const navItems = [
   }
 ];
 
-const icons: Record<string, JSX.Element> = {
+const icons: Record<string, React.ReactNode> = {
   home: (
     <svg className="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
       <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>

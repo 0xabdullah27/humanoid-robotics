@@ -20,7 +20,7 @@ interface ChatWidgetProps {
   activeSection: string;
 }
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'https://backend-physical-ai-and-humanoid-robotics-production.up.railway.app';
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE || '/api';
 
 export default function ChatWidget({ activeSection }: ChatWidgetProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -55,7 +55,6 @@ export default function ChatWidget({ activeSection }: ChatWidgetProps) {
         const response = await fetch(`${API_BASE}/chat/history/${sid}`);
         if (response.ok) {
           const data = await response.json();
-          // Assuming data is an array of messages or similar
           if (Array.isArray(data) && data.length > 0) {
             setMessages(data.map((m: any, idx: number) => ({
               id: `hist-${idx}`,
@@ -70,18 +69,17 @@ export default function ChatWidget({ activeSection }: ChatWidgetProps) {
             setMessages([{
               id: 'welcome',
               role: 'bot',
-              content: 'Hi! I\'m your JS Guide. How can I help you today?',
+              content: 'Hi! I\'m your Physical AI & Humanoid Robotics Assistant. How can I help you explore the book?',
               timestamp: Date.now()
             }]);
           }
         }
       } catch (e) {
         console.warn('Could not fetch remote history, using local if available');
-        // Show welcome message if history fetch fails
         setMessages([{
           id: 'welcome',
           role: 'bot',
-          content: 'Hi! I\'m your JS Guide. How can I help you today?',
+          content: 'Hi! I\'m your Physical AI & Humanoid Robotics Assistant. How can I help you explore the book?',
           timestamp: Date.now()
         }]);
       }
@@ -144,13 +142,13 @@ export default function ChatWidget({ activeSection }: ChatWidgetProps) {
 
     const callApi = async (attempt = 1): Promise<void> => {
       try {
-        console.log('Sending request to:', `${API_BASE}/chat/send/${sessionId}`);
-        console.log('Request body:', { question: text });
+        console.log('Sending request to /api/chat');
+        console.log('Request body:', { question: text, sessionId });
 
-        const response = await fetch(`${API_BASE}/chat/send/${sessionId}`, {
+        const response = await fetch(`${API_BASE}/chat`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ question: text })
+          body: JSON.stringify({ question: text, sessionId })
         });
 
         console.log('Response status:', response.status);

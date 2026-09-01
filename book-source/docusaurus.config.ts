@@ -121,6 +121,10 @@ const config: Config = {
       darkTheme: prismThemes.dracula,
     },
   } satisfies Preset.ThemeConfig,
+
+  customFields: {
+    chatbotApiBase: process.env.CHATBOT_API_BASE || 'http://localhost:3001/api',
+  },
 };
 
 export default config;

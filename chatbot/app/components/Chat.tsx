@@ -13,9 +13,9 @@ interface ChatProps {
   sessionId?: string;
 }
 
-const API_BASE_URL = 'http://localhost:8001';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE || '/api';
 const DEFAULT_CONTENT_SELECTION = {
-  source_id: 'chapter-3',
+  source_id: 'part-1-ros2',
   type: 'chapter'
 };
 
@@ -46,7 +46,7 @@ export default function Chat({ sessionId = 'd8f8c50a-d343-4551-88a0-10a2aac78063
       setMessages([
         {
           id: 'welcome',
-          text: 'Hi! I\'m your learning assistant. Ask me anything about ES6+ JavaScript features!',
+          text: 'Hi! I\'m your Physical AI & Robotics Assistant. Ask me anything about the humanoid robotics book!',
           isUser: false,
           timestamp: new Date()
         }
@@ -81,14 +81,15 @@ export default function Chat({ sessionId = 'd8f8c50a-d343-4551-88a0-10a2aac78063
     setIsLoading(true);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/chat/send/${sessionId}`, {
+      const response = await fetch(`${API_BASE_URL}/chat`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           content_selection: DEFAULT_CONTENT_SELECTION,
-          question: userMessage.text
+          question: userMessage.text,
+          sessionId: sessionId
         }),
       });
 

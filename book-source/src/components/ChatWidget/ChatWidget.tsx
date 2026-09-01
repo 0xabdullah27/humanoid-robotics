@@ -1,9 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import './ChatWidget.module.css';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import styles from './ChatWidget.module.css';
 
 interface Citation {
   source_id: string;
+  title?: string;
   text?: string;
+  score?: number;
 }
 
 interface Message {
@@ -13,23 +16,25 @@ interface Message {
   timestamp: number;
   citations?: Citation[];
   isVerified?: boolean;
+  hasDisclaimer?: boolean;
 }
 
 interface ChatWidgetProps {
-  config?: {
-    apiEndpoint?: string;
-  };
+  apiEndpoint?: string;
 }
 
-const API_BASE = 'https://backend-physical-ai-and-humanoid-robotics-production.up.railway.app';
+export const ChatWidget: React.FC<ChatWidgetProps> = ({ apiEndpoint }) => {
+  const { siteConfig } = useDocusaurusContext();
+  const configuredApiBase = (siteConfig.customFields?.chatbotApiBase as string) || 'http://localhost:3001/api';
+  const API_BASE = apiEndpoint || configuredApiBase;
 
-const ChatWidget: React.FC<ChatWidgetProps> = ({ config = {} }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
+  const [selectedContext, setSelectedContext] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
-  const [selection, setSelection] = useState<{ text: string; x: number; y: number } | null>(null);
+  const [selectionPos, setSelectionPos] = useState<{ text: string; x: number; y: number } | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Initialize session and history on mount
@@ -38,282 +43,321 @@ const ChatWidget: React.FC<ChatWidgetProps> = ({ config = {} }) => {
       try {
         const response = await fetch(`${API_BASE}/chat/start`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' }
+          headers: { 'Content-Type': 'application/json' },
         });
         if (response.ok) {
           const data = await response.json();
           setCurrentSessionId(data.session_id);
-          fetchHistory(data.session_id);
         }
       } catch (error) {
-        console.error('Failed to start chat session:', error);
+        console.warn('Could not start remote chat session, fallback to local session id:', error);
+        setCurrentSessionId(`sess_${Date.now()}`);
       }
     };
 
-    const fetchHistory = async (sid: string) => {
+    // Load local history
+    const saved = localStorage.getItem('docusaurus_chat_history');
+    if (saved) {
       try {
-        const response = await fetch(`${API_BASE}/chat/history/${sid}`);
-        if (response.ok) {
-          const data = await response.json();
-          // Assuming data is an array of messages or similar
-          if (Array.isArray(data) && data.length > 0) {
-            setMessages(data.map((m: any, idx: number) => ({
-              id: `hist-${idx}`,
-              role: m.role === 'assistant' ? 'bot' : 'user',
-              content: m.content || m.answer || m.question,
-              timestamp: Date.now(),
-              citations: m.citations,
-              isVerified: m.is_from_book
-            })));
-          } else {
-            // Show welcome message if no history
-            setMessages([{
-              id: 'welcome',
-              role: 'bot',
-              content: 'Hi! I\'m your JS Guide. How can I help you today?',
-              timestamp: Date.now()
-            }]);
-          }
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setMessages(parsed);
+        } else {
+          setWelcomeMessage();
         }
-      } catch (e) {
-        console.warn('Could not fetch remote history, using local if available');
-        // Show welcome message if history fetch fails
-        setMessages([{
-          id: 'welcome',
-          role: 'bot',
-          content: 'Hi! I\'m your JS Guide. How can I help you today?',
-          timestamp: Date.now()
-        }]);
+      } catch {
+        setWelcomeMessage();
       }
-    };
+    } else {
+      setWelcomeMessage();
+    }
 
     startSession();
 
-    // Text selection handler
+    // Text selection listener across the book
     const handleMouseUp = () => {
-      const selectedText = window.getSelection()?.toString().trim();
+      const selection = window.getSelection();
+      const selectedText = selection?.toString().trim();
+
       if (selectedText && selectedText.length > 5) {
-        const range = window.getSelection()?.getRangeAt(0);
+        const range = selection?.getRangeAt(0);
         const rect = range?.getBoundingClientRect();
         if (rect) {
-          setSelection({
+          setSelectionPos({
             text: selectedText,
             x: rect.left + window.scrollX,
-            y: rect.top + window.scrollY - 40
+            y: rect.top + window.scrollY - 38,
           });
         }
       } else {
-        setSelection(null);
+        setSelectionPos(null);
       }
     };
 
     document.addEventListener('mouseup', handleMouseUp);
     return () => document.removeEventListener('mouseup', handleMouseUp);
-  }, []);
+  }, [API_BASE]);
 
-  // Save history to localStorage as fallback
+  const setWelcomeMessage = () => {
+    setMessages([
+      {
+        id: 'welcome',
+        role: 'bot',
+        content: '👋 Hi! I am your **Physical AI & Humanoid Robotics Assistant**.\n\nAsk me anything about ROS 2, Gazebo, Isaac Sim, Digital Twins, or VLA models from the book!',
+        timestamp: Date.now(),
+      },
+    ]);
+  };
+
+  // Save history to localStorage
   useEffect(() => {
     if (messages.length > 0) {
-      localStorage.setItem('chat_history', JSON.stringify(messages));
+      localStorage.setItem('docusaurus_chat_history', JSON.stringify(messages));
     }
   }, [messages]);
 
-  // Scroll to bottom
+  // Scroll to bottom when messages update
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+    if (isOpen) {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages, isOpen, isLoading]);
 
   const handleSend = async (overrideText?: string) => {
-    const text = overrideText || inputValue;
-    if (!text.trim() || isLoading) return;
+    const text = (overrideText || inputValue).trim();
+    if (!text || isLoading) return;
 
-    let sessionId = currentSessionId;
-    if (!sessionId) return;
-
-    const userMessage: Message = {
-      id: Date.now().toString(),
+    const userMsg: Message = {
+      id: `usr_${Date.now()}`,
       role: 'user',
       content: text,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
 
-    setMessages(prev => [...prev, userMessage]);
+    setMessages((prev) => [...prev, userMsg]);
     setInputValue('');
     setIsLoading(true);
 
-    try {
-      console.log('Sending request to:', `${API_BASE}/chat/send/${sessionId}`);
-      console.log('Request body:', { question: text });
+    const contextToSend = selectedContext;
+    setSelectedContext(null);
 
-      const response = await fetch(`${API_BASE}/chat/send/${sessionId}`, {
+    try {
+      const response = await fetch(`${API_BASE}/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question: text })
+        body: JSON.stringify({
+          question: text,
+          context: contextToSend || undefined,
+          sessionId: currentSessionId,
+        }),
       });
 
-      console.log('Response status:', response.status);
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error('API Error:', errorText);
-        throw new Error(`HTTP error ${response.status}`);
+        throw new Error(`Server returned HTTP ${response.status}`);
       }
 
       const data = await response.json();
-      console.log('API Response:', data);
-
-      const botMessage: Message = {
-        id: (Date.now() + 1).toString(),
+      const botMsg: Message = {
+        id: `bot_${Date.now()}`,
         role: 'bot',
-        content: data.answer || 'No response from AI.',
+        content: data.answer || 'No response generated.',
         timestamp: Date.now(),
-        citations: data.citations,
-        isVerified: data.is_from_book
+        citations: data.citations || [],
+        isVerified: Boolean(data.is_from_book),
+        hasDisclaimer: Boolean(data.has_disclaimer),
       };
-      setMessages(prev => [...prev, botMessage]);
-    } catch (error) {
+
+      setMessages((prev) => [...prev, botMsg]);
+    } catch (error: any) {
       console.error('Chat Error:', error);
-      setMessages(prev => [...prev, {
-        id: Date.now().toString(),
-        role: 'bot',
-        content: 'Sorry, I hit a snag. Please check your connection.',
-        timestamp: Date.now()
-      }]);
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: `bot_err_${Date.now()}`,
+          role: 'bot',
+          content: '⚠️ Unable to connect to the AI service. Please verify the backend is running at `' + API_BASE + '`.',
+          timestamp: Date.now(),
+        },
+      ]);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleContextQuery = () => {
-    if (selection) {
-      const contextText = `Context: [${selection.text}]\n\nQuestion: `;
-      setInputValue(contextText);
+  const handleContextSelect = () => {
+    if (selectionPos) {
+      setSelectedContext(selectionPos.text);
       setIsOpen(true);
-      setSelection(null);
-      // Focus input
-      setTimeout(() => {
-        const input = document.querySelector('.chat-input') as HTMLInputElement;
-        input?.focus();
-      }, 300);
+      setSelectionPos(null);
     }
   };
 
-  const clearChat = async () => {
-    localStorage.removeItem('chat_history');
-    setMessages([]);
-    const response = await fetch(`${API_BASE}/chat/start`, { method: 'POST' });
-    const data = await response.json();
-    setCurrentSessionId(data.session_id);
-    setMessages([{ id: 'welcome', role: 'bot', content: 'History cleared. New session started!', timestamp: Date.now() }]);
+  const clearChat = () => {
+    localStorage.removeItem('docusaurus_chat_history');
+    setWelcomeMessage();
+    setCurrentSessionId(`sess_${Date.now()}`);
   };
+
+  const quickPrompts = [
+    'What is ROS 2 and its core concepts?',
+    'How do I spawn a humanoid in Gazebo?',
+    'Explain Isaac Sim sensor pipelines',
+  ];
 
   return (
     <>
-      {/* Floating Action Button for Selection */}
-      {selection && (
+      {/* Floating Highlight Action Tooltip */}
+      {selectionPos && (
         <button
-          className="context-btn"
+          className={styles.selectionTooltip}
           style={{
             position: 'absolute',
-            left: selection.x,
-            top: selection.y,
-            zIndex: 2000,
-            background: 'var(--ifm-color-primary)',
-            color: 'white',
-            border: 'none',
-            borderRadius: '20px',
-            padding: '5px 12px',
-            fontSize: '0.8rem',
-            cursor: 'pointer',
-            boxShadow: '0 4px 10px rgba(0,0,0,0.3)'
+            left: `${selectionPos.x}px`,
+            top: `${selectionPos.y}px`,
           }}
           onMouseDown={(e) => {
-            e.preventDefault(); // Prevent losing selection
-            handleContextQuery();
+            e.preventDefault();
+            handleContextSelect();
           }}
         >
-          Ask about this ✨
+          🤖 Ask AI about this selection
         </button>
       )}
 
+      {/* Floating Launcher Button */}
       <button
-        className="chat-toggle-btn"
+        className={`${styles.floatingButton} ${isOpen ? styles.active : ''}`}
         onClick={() => setIsOpen(!isOpen)}
-        aria-label="Toggle chat"
+        aria-label="Toggle AI Book Assistant"
+        title="Physical AI Book Assistant"
       >
         {isOpen ? (
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
             <line x1="18" y1="6" x2="6" y2="18" />
             <line x1="6" y1="6" x2="18" y2="18" />
           </svg>
         ) : (
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-          </svg>
+          <div className={styles.fabIcon}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M12 2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2 2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" />
+              <rect x="4" y="8" width="16" height="12" rx="3" />
+              <circle cx="9" cy="13" r="1.5" fill="currentColor" />
+              <circle cx="15" cy="13" r="1.5" fill="currentColor" />
+              <path d="M9 17h6" />
+            </svg>
+            <span className={styles.pulseDot}></span>
+          </div>
         )}
       </button>
 
-      <div className={`chat-container ${isOpen ? 'open' : ''}`}>
-        <div className="chat-header">
-          <div className="chat-header-title">
-            <div className="chat-avatar">JS</div>
-            <div className="chat-header-text">
-              <h3>JS Guide</h3>
-              <span>{currentSessionId ? 'Online' : 'Connecting...'}</span>
+      {/* Chat Window Panel */}
+      <div className={`${styles.chatContainer} ${isOpen ? styles.open : ''}`}>
+        {/* Header */}
+        <div className={styles.chatHeader}>
+          <div className={styles.headerInfo}>
+            <div className={styles.avatarBadge}>🤖</div>
+            <div>
+              <h3 className={styles.title}>Physical AI Assistant</h3>
+              <p className={styles.subtitle}>Grounded in Book Content</p>
             </div>
           </div>
-          <div style={{ display: 'flex', gap: '8px' }}>
-            <button className="chat-new-btn" onClick={clearChat} title="New Chat">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"></path>
-                <polyline points="21 3 21 8 16 8"></polyline>
+          <div className={styles.headerActions}>
+            <button className={styles.iconBtn} onClick={clearChat} title="Reset Chat History">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
+                <path d="M21 3v5h-5" />
+                <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
+                <path d="M8 16H3v5" />
               </svg>
             </button>
-            <button className="chat-close-btn" onClick={() => setIsOpen(false)}>✕</button>
+            <button className={styles.iconBtn} onClick={() => setIsOpen(false)} title="Close Chat">
+              ✕
+            </button>
           </div>
         </div>
 
-        <div className="chat-messages">
-          {messages.map(msg => (
-            <div key={msg.id} className={`message ${msg.role}`}>
-              <div className="message-content" style={{ whiteSpace: 'pre-wrap' }}>
-                {msg.content}
-                {msg.isVerified && <span className="verified-badge">✓</span>}
+        {/* Selected Context Chip */}
+        {selectedContext && (
+          <div className={styles.contextBanner}>
+            <span className={styles.contextIcon}>📌</span>
+            <div className={styles.contextText}>
+              <strong>Highlighted Context:</strong> &ldquo;{selectedContext.slice(0, 80)}...&rdquo;
+            </div>
+            <button className={styles.closeContext} onClick={() => setSelectedContext(null)}>✕</button>
+          </div>
+        )}
+
+        {/* Messages */}
+        <div className={styles.messagesList}>
+          {messages.map((msg) => (
+            <div key={msg.id} className={`${styles.message} ${msg.role === 'user' ? styles.user : styles.bot}`}>
+              <div className={styles.messageBubble}>
+                <div className={styles.messageContent}>{msg.content}</div>
+
+                {/* Citations & Verified Badges */}
+                {msg.isVerified && (
+                  <div className={styles.verifiedTag}>
+                    <span>✓ Verified Book Content</span>
+                  </div>
+                )}
+
+                {msg.citations && msg.citations.length > 0 && (
+                  <div className={styles.citationsContainer}>
+                    <span className={styles.citationsLabel}>Sources:</span>
+                    {msg.citations.map((c, i) => (
+                      <span key={i} className={styles.citationBadge} title={c.title || c.source_id}>
+                        📖 {c.source_id}
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
-              {msg.citations && msg.citations.length > 0 && (
-                <div className="citations">
-                  {msg.citations.map((cit, idx) => (
-                    <span key={idx} className="citation-tag">[{cit.source_id}]</span>
-                  ))}
-                </div>
-              )}
             </div>
           ))}
+
           {isLoading && (
-            <div className="message bot loading">
-              <span></span><span></span><span></span>
+            <div className={`${styles.message} ${styles.bot}`}>
+              <div className={`${styles.messageBubble} ${styles.loadingBubble}`}>
+                <span className={styles.dot}></span>
+                <span className={styles.dot}></span>
+                <span className={styles.dot}></span>
+              </div>
             </div>
           )}
           <div ref={messagesEndRef} />
         </div>
 
-        <div className="chat-input-container">
+        {/* Quick Suggestion Chips */}
+        {messages.length <= 1 && (
+          <div className={styles.quickPrompts}>
+            {quickPrompts.map((prompt, idx) => (
+              <button key={idx} className={styles.promptChip} onClick={() => handleSend(prompt)}>
+                {prompt}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Input Bar */}
+        <div className={styles.inputArea}>
           <input
             type="text"
-            className="chat-input"
-            placeholder="Ask a question..."
+            className={styles.textInput}
+            placeholder={selectedContext ? "Ask a question about this selection..." : "Ask anything about the book..."}
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+            onKeyDown={(e) => e.key === 'Enter' && handleSend()}
             disabled={isLoading}
           />
           <button
-            className="chat-send-btn"
+            className={styles.sendButton}
             onClick={() => handleSend()}
             disabled={isLoading || !inputValue.trim()}
+            title="Send Message"
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <line x1="22" y1="2" x2="11" y2="13"></line>
-              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <line x1="22" y1="2" x2="11" y2="13" />
+              <polygon points="22 2 15 22 11 13 2 9 22 2" />
             </svg>
           </button>
         </div>
