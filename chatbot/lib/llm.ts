@@ -49,12 +49,22 @@ function getOpenAIClient(): OpenAI | null {
   return openaiClient;
 }
 
+export interface ConversationMessage {
+  role: 'user' | 'assistant' | 'system';
+  content: string;
+}
+
 export async function generateRAGAnswer(
-  question: string,
+  messagesOrQuestion: string | ConversationMessage[],
   chunks: RetrievedChunk[],
   selectedContext?: string
 ): Promise<ChatResult> {
   const client = getOpenAIClient();
+
+  // Normalize input to messages array
+  const conversationMessages: ConversationMessage[] = Array.isArray(messagesOrQuestion)
+    ? messagesOrQuestion
+    : [{ role: 'user', content: messagesOrQuestion }];
 
   // Deduplicate and extract citations
   const citations: Citation[] = [];
@@ -107,18 +117,24 @@ export async function generateRAGAnswer(
 
   const model = process.env.LLM_MODEL || 'gpt-4o-mini';
 
-  const userContent = hasContext
-    ? `Context from the book:\n${formattedContext}\n\nUser Question: ${question}`
-    : `User Question: ${question}`;
+  // Construct complete prompt: System prompt with book context + conversation history
+  const systemInstruction = hasContext
+    ? `${SYSTEM_PROMPT}\n\n--- BOOK CONTEXT ---\n${formattedContext}\n-------------------`
+    : SYSTEM_PROMPT;
+
+  const finalMessages: Array<{ role: 'system' | 'user' | 'assistant'; content: string }> = [
+    { role: 'system', content: systemInstruction },
+    ...conversationMessages.map((m) => ({
+      role: m.role as 'system' | 'user' | 'assistant',
+      content: m.content,
+    })),
+  ];
 
   try {
     const completion = await client.chat.completions.create({
       model: model,
       temperature: 0.3,
-      messages: [
-        { role: 'system', content: SYSTEM_PROMPT },
-        { role: 'user', content: userContent },
-      ],
+      messages: finalMessages,
     });
 
     const answer = completion.choices[0]?.message?.content || 'No response generated.';

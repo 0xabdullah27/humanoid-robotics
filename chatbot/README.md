@@ -8,9 +8,7 @@ A lightweight Next.js Serverless RAG backend providing vector search, embeddings
 
 | Method | Endpoint | Description |
 | :--- | :--- | :--- |
-| `POST` | `/api/chat` | Main RAG question answering endpoint |
-| `POST` | `/api/chat/start` | Initialize a new multi-turn session |
-| `GET` | `/api/chat/history/[id]` | Retrieve conversation history |
+| `POST` | `/api/chat` | Stateless Multi-turn RAG (accepts up to 20 conversation messages) |
 | `GET` | `/api/health` | Service diagnostics and status probe |
 | `POST` | `/api/ingestion` | On-demand document chunking & re-indexing |
 

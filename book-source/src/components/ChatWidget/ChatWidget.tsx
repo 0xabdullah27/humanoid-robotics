@@ -33,28 +33,11 @@ export const ChatWidget: React.FC<ChatWidgetProps> = ({ apiEndpoint }) => {
   const [inputValue, setInputValue] = useState('');
   const [selectedContext, setSelectedContext] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
   const [selectionPos, setSelectionPos] = useState<{ text: string; x: number; y: number } | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Initialize session and history on mount
+  // Initialize history on mount
   useEffect(() => {
-    const startSession = async () => {
-      try {
-        const response = await fetch(`${API_BASE}/chat/start`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-        });
-        if (response.ok) {
-          const data = await response.json();
-          setCurrentSessionId(data.session_id);
-        }
-      } catch (error) {
-        console.warn('Could not start remote chat session, fallback to local session id:', error);
-        setCurrentSessionId(`sess_${Date.now()}`);
-      }
-    };
-
     // Load local history
     const saved = localStorage.getItem('docusaurus_chat_history');
     if (saved) {
@@ -71,8 +54,6 @@ export const ChatWidget: React.FC<ChatWidgetProps> = ({ apiEndpoint }) => {
     } else {
       setWelcomeMessage();
     }
-
-    startSession();
 
     // Text selection listener across the book
     const handleMouseUp = () => {
@@ -96,7 +77,7 @@ export const ChatWidget: React.FC<ChatWidgetProps> = ({ apiEndpoint }) => {
 
     document.addEventListener('mouseup', handleMouseUp);
     return () => document.removeEventListener('mouseup', handleMouseUp);
-  }, [API_BASE]);
+  }, []);
 
   const setWelcomeMessage = () => {
     setMessages([
@@ -134,21 +115,31 @@ export const ChatWidget: React.FC<ChatWidgetProps> = ({ apiEndpoint }) => {
       timestamp: Date.now(),
     };
 
-    setMessages((prev) => [...prev, userMsg]);
+    const updatedMessages = [...messages, userMsg];
+    setMessages(updatedMessages);
     setInputValue('');
     setIsLoading(true);
 
     const contextToSend = selectedContext;
     setSelectedContext(null);
 
+    // Prepare recent conversation turns (up to 20 messages = 10 user + 10 assistant)
+    const validHistory = updatedMessages
+      .filter((m) => m.id !== 'welcome')
+      .slice(-20)
+      .map((m) => ({
+        role: m.role === 'bot' ? 'assistant' : 'user',
+        content: m.content,
+      }));
+
     try {
       const response = await fetch(`${API_BASE}/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          messages: validHistory,
           question: text,
           context: contextToSend || undefined,
-          sessionId: currentSessionId,
         }),
       });
 

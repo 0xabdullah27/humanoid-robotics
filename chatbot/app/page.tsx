@@ -2,43 +2,33 @@ import Link from 'next/link';
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-black text-white flex flex-col items-center justify-center p-6 font-sans">
-      <div className="max-w-xl w-full bg-zinc-950 border border-zinc-800 rounded-2xl p-8 shadow-2xl">
-        <div className="flex items-center gap-3 mb-6">
-          <span className="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
-          <h1 className="text-xl font-bold tracking-tight">Physical AI & Humanoid Robotics — RAG API</h1>
+    <main style={{ minHeight: '100vh', backgroundColor: '#000', color: '#fff', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '24px', fontFamily: 'sans-serif' }}>
+      <div style={{ maxWidth: '560px', width: '100%', backgroundColor: '#09090b', border: '1px solid #27272a', borderRadius: '16px', padding: '32px', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
+          <span style={{ width: '12px', height: '12px', borderRadius: '50%', backgroundColor: '#10b981', display: 'inline-block' }}></span>
+          <h1 style={{ fontSize: '18px', fontWeight: 'bold', margin: 0 }}>Physical AI & Humanoid Robotics — RAG API</h1>
         </div>
 
-        <p className="text-sm text-zinc-400 mb-6">
+        <p style={{ fontSize: '14px', color: '#a1a1aa', marginBottom: '24px', lineHeight: '1.5' }}>
           This Next.js service operates purely as the Serverless RAG backend powering the embedded book chatbot.
         </p>
 
-        <div className="space-y-3">
-          <h2 className="text-xs uppercase tracking-wider text-zinc-500 font-semibold">Available Endpoints</h2>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <h2 style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em', color: '#71717a', margin: 0, fontWeight: 600 }}>Available Endpoints</h2>
 
-          <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-3 flex items-center justify-between text-xs">
-            <span className="font-mono text-emerald-400">POST /api/chat</span>
-            <span className="text-zinc-500">Main RAG query</span>
+          <div style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '8px', padding: '12px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '13px' }}>
+            <span style={{ fontFamily: 'monospace', color: '#34d399' }}>POST /api/chat</span>
+            <span style={{ color: '#71717a', fontSize: '12px' }}>Stateless Multi-turn RAG Query</span>
           </div>
 
-          <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-3 flex items-center justify-between text-xs">
-            <span className="font-mono text-emerald-400">POST /api/chat/start</span>
-            <span className="text-zinc-500">Session init</span>
-          </div>
-
-          <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-3 flex items-center justify-between text-xs">
-            <span className="font-mono text-cyan-400">GET /api/chat/history/[id]</span>
-            <span className="text-zinc-500">Chat history</span>
-          </div>
-
-          <Link href="/api/health" className="bg-zinc-900 hover:bg-zinc-800 transition border border-zinc-800 rounded-lg p-3 flex items-center justify-between text-xs block">
-            <span className="font-mono text-cyan-400">GET /api/health ↗</span>
-            <span className="text-emerald-400">Status & Diagnostics</span>
+          <Link href="/api/health" style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '8px', padding: '12px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '13px', textDecoration: 'none' }}>
+            <span style={{ fontFamily: 'monospace', color: '#38bdf8' }}>GET /api/health ↗</span>
+            <span style={{ color: '#34d399', fontSize: '12px' }}>Status & Diagnostics</span>
           </Link>
 
-          <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-3 flex items-center justify-between text-xs">
-            <span className="font-mono text-emerald-400">POST /api/ingestion</span>
-            <span className="text-zinc-500">On-demand re-index</span>
+          <div style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '8px', padding: '12px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '13px' }}>
+            <span style={{ fontFamily: 'monospace', color: '#34d399' }}>POST /api/ingestion</span>
+            <span style={{ color: '#71717a', fontSize: '12px' }}>On-demand re-index</span>
           </div>
         </div>
       </div>
