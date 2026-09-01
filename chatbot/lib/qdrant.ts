@@ -34,7 +34,7 @@ export function getQdrantClient(): QdrantClient | null {
   return qdrantClient;
 }
 
-export const COLLECTION_NAME = process.env.QDRANT_COLLECTION_NAME || 'book_content';
+export const COLLECTION_NAME = process.env.QDRANT_COLLECTION_NAME || 'humanoid-robotic-book';
 
 export async function ensureCollection(
   collectionName: string = COLLECTION_NAME,
@@ -68,7 +68,7 @@ export async function ensureCollection(
 export async function searchVector(
   queryVector: number[],
   limit = 8,
-  scoreThreshold = 0.5
+  scoreThreshold = 0.3
 ): Promise<RetrievedChunk[]> {
   const client = getQdrantClient();
   if (!client) {
@@ -76,17 +76,28 @@ export async function searchVector(
     return [];
   }
 
+  const collection = process.env.QDRANT_COLLECTION_NAME || COLLECTION_NAME;
+
   try {
-    const response = await client.query(COLLECTION_NAME, {
-      query: queryVector,
-      limit: limit,
-      score_threshold: scoreThreshold,
-      with_payload: true,
-    });
+    let results: any[] = [];
+    if (typeof (client as any).search === 'function') {
+      results = await (client as any).search(collection, {
+        vector: queryVector,
+        limit: limit,
+        score_threshold: scoreThreshold,
+        with_payload: true,
+      });
+    } else {
+      const response = await client.query(collection, {
+        query: queryVector,
+        limit: limit,
+        score_threshold: scoreThreshold,
+        with_payload: true,
+      });
+      results = response.points || [];
+    }
 
-    const points = response.points || [];
-
-    return points.map((r: any) => ({
+    return results.map((r: any) => ({
       id: r.id,
       score: r.score,
       payload: (r.payload as RetrievedChunk['payload']) || {},

@@ -25,7 +25,7 @@ interface ChatWidgetProps {
 
 export const ChatWidget: React.FC<ChatWidgetProps> = ({ apiEndpoint }) => {
   const { siteConfig } = useDocusaurusContext();
-  const configuredApiBase = (siteConfig.customFields?.chatbotApiBase as string) || 'http://localhost:3001/api';
+  const configuredApiBase = (siteConfig.customFields?.chatbotApiBase as string) || 'https://humanoid-robotics-api.vercel.app/api';
   const API_BASE = apiEndpoint || configuredApiBase;
 
   const [isOpen, setIsOpen] = useState(false);

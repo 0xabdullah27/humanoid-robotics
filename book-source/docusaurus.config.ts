@@ -122,7 +122,7 @@ const config: Config = {
   } satisfies Preset.ThemeConfig,
 
   customFields: {
-    chatbotApiBase: process.env.CHATBOT_API_BASE || 'http://localhost:3001/api',
+    chatbotApiBase: process.env.CHATBOT_API_BASE || 'https://humanoid-robotics-api.vercel.app/api',
   },
 };
 
