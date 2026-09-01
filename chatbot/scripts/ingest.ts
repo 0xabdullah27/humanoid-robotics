@@ -133,6 +133,7 @@ async function main() {
   const qdrant = new QdrantClient({
     url: QDRANT_URL,
     apiKey: QDRANT_API_KEY || undefined,
+    checkCompatibility: false,
   });
 
   // Ensure collection exists

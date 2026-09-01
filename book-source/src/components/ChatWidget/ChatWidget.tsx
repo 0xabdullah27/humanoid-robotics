@@ -56,7 +56,14 @@ export const ChatWidget: React.FC<ChatWidgetProps> = ({ apiEndpoint }) => {
     }
 
     // Text selection listener across the book
-    const handleMouseUp = () => {
+    const handleMouseUp = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      // Do not trigger tooltip if selecting inside the chat window
+      if (target && target.closest('#docusaurus-chat-container')) {
+        setSelectionPos(null);
+        return;
+      }
+
       const selection = window.getSelection();
       const selectedText = selection?.toString().trim();
 
@@ -67,7 +74,7 @@ export const ChatWidget: React.FC<ChatWidgetProps> = ({ apiEndpoint }) => {
           setSelectionPos({
             text: selectedText,
             x: rect.left + window.scrollX,
-            y: rect.top + window.scrollY - 38,
+            y: Math.max(10, rect.top + window.scrollY - 42),
           });
         }
       } else {
@@ -196,8 +203,8 @@ export const ChatWidget: React.FC<ChatWidgetProps> = ({ apiEndpoint }) => {
 
   return (
     <>
-      {/* Floating Highlight Action Tooltip */}
-      {selectionPos && (
+      {/* Floating Highlight Action Tooltip (Only when chat is closed) */}
+      {!isOpen && selectionPos && (
         <button
           className={styles.selectionTooltip}
           style={{
@@ -217,7 +224,10 @@ export const ChatWidget: React.FC<ChatWidgetProps> = ({ apiEndpoint }) => {
       {/* Floating Launcher Button */}
       <button
         className={`${styles.floatingButton} ${isOpen ? styles.active : ''}`}
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => {
+          setIsOpen(!isOpen);
+          setSelectionPos(null);
+        }}
         aria-label="Toggle AI Book Assistant"
         title="Physical AI Book Assistant"
       >
@@ -241,7 +251,7 @@ export const ChatWidget: React.FC<ChatWidgetProps> = ({ apiEndpoint }) => {
       </button>
 
       {/* Chat Window Panel */}
-      <div className={`${styles.chatContainer} ${isOpen ? styles.open : ''}`}>
+      <div id="docusaurus-chat-container" className={`${styles.chatContainer} ${isOpen ? styles.open : ''}`}>
         {/* Header */}
         <div className={styles.chatHeader}>
           <div className={styles.headerInfo}>
