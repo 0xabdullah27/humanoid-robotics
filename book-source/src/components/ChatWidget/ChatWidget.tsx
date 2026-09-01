@@ -1,5 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import {
+  Bot,
+  Sparkles,
+  RotateCcw,
+  X,
+  Send,
+  FileText,
+  CheckCircle2,
+  AlertCircle,
+  Clock,
+  Terminal,
+  Bookmark
+} from 'lucide-react';
 import styles from './ChatWidget.module.css';
 
 interface Citation {
@@ -38,7 +51,6 @@ export const ChatWidget: React.FC<ChatWidgetProps> = ({ apiEndpoint }) => {
 
   // Initialize history on mount
   useEffect(() => {
-    // Load local history
     const saved = localStorage.getItem('docusaurus_chat_history');
     if (saved) {
       try {
@@ -58,7 +70,6 @@ export const ChatWidget: React.FC<ChatWidgetProps> = ({ apiEndpoint }) => {
     // Text selection listener across the book
     const handleMouseUp = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      // Do not trigger tooltip if selecting inside the chat window
       if (target && target.closest('#docusaurus-chat-container')) {
         setSelectionPos(null);
         return;
@@ -91,7 +102,7 @@ export const ChatWidget: React.FC<ChatWidgetProps> = ({ apiEndpoint }) => {
       {
         id: 'welcome',
         role: 'bot',
-        content: '👋 Hi! I am your **Physical AI & Humanoid Robotics Assistant**.\n\nAsk me anything about ROS 2, Gazebo, Isaac Sim, Digital Twins, or VLA models from the book!',
+        content: '**VECTRA AI COPILOT // PHYSICAL AI ASSISTANT**\n\nI am your intelligent companion for **Physical AI & Humanoid Robotics**. Ask me any technical question regarding ROS 2 nodes, URDF modeling, Gazebo physics, Isaac Sim perception, or VLA pipelines.',
         timestamp: Date.now(),
       },
     ]);
@@ -130,7 +141,6 @@ export const ChatWidget: React.FC<ChatWidgetProps> = ({ apiEndpoint }) => {
     const contextToSend = selectedContext;
     setSelectedContext(null);
 
-    // Prepare recent conversation turns (up to 20 messages = 10 user + 10 assistant)
     const validHistory = updatedMessages
       .filter((m) => m.id !== 'welcome')
       .slice(-20)
@@ -180,14 +190,14 @@ export const ChatWidget: React.FC<ChatWidgetProps> = ({ apiEndpoint }) => {
       clearTimeout(timeoutId);
       console.error('Chat Error:', error);
 
-      let userFriendlyMessage = '⚠️ Unable to connect to the AI Assistant. Please check your internet connection or try again shortly.';
+      let userFriendlyMessage = 'Unable to connect to the AI Assistant. Please verify backend API connectivity or retry shortly.';
 
       if (error?.name === 'AbortError') {
-        userFriendlyMessage = '⏱️ **Request Timed Out**: The AI service took longer than 15 seconds to respond. Please try again with a shorter question.';
+        userFriendlyMessage = '**Request Timed Out**: The AI inference service took longer than 15 seconds to respond. Please try with a more specific query.';
       } else if (error?.message === 'RATE_LIMIT') {
-        userFriendlyMessage = '⏳ **Slow Down**: You have asked several questions recently. Please wait a few moments before asking another.';
+        userFriendlyMessage = '**Rate Limit Encountered**: Multiple concurrent requests detected. Please wait a brief moment before re-submitting.';
       } else if (error?.message?.startsWith('HTTP_5')) {
-        userFriendlyMessage = '🔧 **Server Error**: The backend encountered an unexpected error. Please try again in a moment.';
+        userFriendlyMessage = '**Server Endpoint Error**: Backend service encountered an unhandled exception. Please retry in a few moments.';
       }
 
       setMessages((prev) => [
@@ -219,9 +229,9 @@ export const ChatWidget: React.FC<ChatWidgetProps> = ({ apiEndpoint }) => {
   };
 
   const quickPrompts = [
-    'What is ROS 2 and its core concepts?',
-    'How do I spawn a humanoid in Gazebo?',
-    'Explain Isaac Sim sensor pipelines',
+    'Explain ROS 2 QoS profiles and use cases',
+    'How do I setup URDF inertia tensors for humanoid legs?',
+    'What is Isaac ROS Visual SLAM architecture?',
   ];
 
   return (
@@ -240,7 +250,8 @@ export const ChatWidget: React.FC<ChatWidgetProps> = ({ apiEndpoint }) => {
             handleContextSelect();
           }}
         >
-          🤖 Ask AI about this selection
+          <Bot size={14} className={styles.tooltipIcon} />
+          <span>Ask AI Copilot about selection</span>
         </button>
       )}
 
@@ -252,22 +263,13 @@ export const ChatWidget: React.FC<ChatWidgetProps> = ({ apiEndpoint }) => {
           setSelectionPos(null);
         }}
         aria-label="Toggle AI Book Assistant"
-        title="Physical AI Book Assistant"
+        title="Physical AI Copilot"
       >
         {isOpen ? (
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-            <line x1="18" y1="6" x2="6" y2="18" />
-            <line x1="6" y1="6" x2="18" y2="18" />
-          </svg>
+          <X size={22} />
         ) : (
           <div className={styles.fabIcon}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M12 2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2 2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" />
-              <rect x="4" y="8" width="16" height="12" rx="3" />
-              <circle cx="9" cy="13" r="1.5" fill="currentColor" />
-              <circle cx="15" cy="13" r="1.5" fill="currentColor" />
-              <path d="M9 17h6" />
-            </svg>
+            <Bot size={24} />
             <span className={styles.pulseDot}></span>
           </div>
         )}
@@ -278,23 +280,20 @@ export const ChatWidget: React.FC<ChatWidgetProps> = ({ apiEndpoint }) => {
         {/* Header */}
         <div className={styles.chatHeader}>
           <div className={styles.headerInfo}>
-            <div className={styles.avatarBadge}>🤖</div>
+            <div className={styles.avatarBadge}>
+              <Bot size={20} />
+            </div>
             <div>
-              <h3 className={styles.title}>Physical AI Assistant</h3>
-              <p className={styles.subtitle}>Grounded in Book Content</p>
+              <h3 className={styles.title}>VECTRA COPILOT</h3>
+              <p className={styles.subtitle}>Physical AI & Robotics Intelligence</p>
             </div>
           </div>
           <div className={styles.headerActions}>
             <button className={styles.iconBtn} onClick={clearChat} title="Reset Chat History">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
-                <path d="M21 3v5h-5" />
-                <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
-                <path d="M8 16H3v5" />
-              </svg>
+              <RotateCcw size={15} />
             </button>
             <button className={styles.iconBtn} onClick={() => setIsOpen(false)} title="Close Chat">
-              ✕
+              <X size={16} />
             </button>
           </div>
         </div>
@@ -302,11 +301,13 @@ export const ChatWidget: React.FC<ChatWidgetProps> = ({ apiEndpoint }) => {
         {/* Selected Context Chip */}
         {selectedContext && (
           <div className={styles.contextBanner}>
-            <span className={styles.contextIcon}>📌</span>
+            <Bookmark size={14} className={styles.contextIcon} />
             <div className={styles.contextText}>
-              <strong>Highlighted Context:</strong> &ldquo;{selectedContext.slice(0, 80)}...&rdquo;
+              <strong>Selected Context:</strong> &ldquo;{selectedContext.slice(0, 80)}...&rdquo;
             </div>
-            <button className={styles.closeContext} onClick={() => setSelectedContext(null)}>✕</button>
+            <button className={styles.closeContext} onClick={() => setSelectedContext(null)}>
+              <X size={12} />
+            </button>
           </div>
         )}
 
@@ -320,7 +321,8 @@ export const ChatWidget: React.FC<ChatWidgetProps> = ({ apiEndpoint }) => {
                 {/* Citations & Verified Badges */}
                 {msg.isVerified && (
                   <div className={styles.verifiedTag}>
-                    <span>✓ Verified Book Content</span>
+                    <CheckCircle2 size={12} />
+                    <span>Grounded in Book Reference</span>
                   </div>
                 )}
 
@@ -329,7 +331,8 @@ export const ChatWidget: React.FC<ChatWidgetProps> = ({ apiEndpoint }) => {
                     <span className={styles.citationsLabel}>Sources:</span>
                     {msg.citations.map((c, i) => (
                       <span key={i} className={styles.citationBadge} title={c.title || c.source_id}>
-                        📖 {c.source_id}
+                        <FileText size={10} />
+                        <span>{c.source_id}</span>
                       </span>
                     ))}
                   </div>
@@ -355,7 +358,8 @@ export const ChatWidget: React.FC<ChatWidgetProps> = ({ apiEndpoint }) => {
           <div className={styles.quickPrompts}>
             {quickPrompts.map((prompt, idx) => (
               <button key={idx} className={styles.promptChip} onClick={() => handleSend(prompt)}>
-                {prompt}
+                <Sparkles size={12} className={styles.promptIcon} />
+                <span>{prompt}</span>
               </button>
             ))}
           </div>
@@ -366,7 +370,7 @@ export const ChatWidget: React.FC<ChatWidgetProps> = ({ apiEndpoint }) => {
           <input
             type="text"
             className={styles.textInput}
-            placeholder={selectedContext ? "Ask a question about this selection..." : "Ask anything about the book..."}
+            placeholder={selectedContext ? "Query highlighted section..." : "Ask technical robotics question..."}
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSend()}
@@ -376,12 +380,9 @@ export const ChatWidget: React.FC<ChatWidgetProps> = ({ apiEndpoint }) => {
             className={styles.sendButton}
             onClick={() => handleSend()}
             disabled={isLoading || !inputValue.trim()}
-            title="Send Message"
+            title="Transmit Query"
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <line x1="22" y1="2" x2="11" y2="13" />
-              <polygon points="22 2 15 22 11 13 2 9 22 2" />
-            </svg>
+            <Send size={16} />
           </button>
         </div>
       </div>
