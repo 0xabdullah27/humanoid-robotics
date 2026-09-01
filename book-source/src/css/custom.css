@@ -1,52 +1,56 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 @import "tailwindcss/theme" layer(theme);
 @import "tailwindcss/utilities" layer(utilities);
 
 /**
  * Vectra - Physical AI & Humanoid Robotics
- * Minimalist, modern design with green accent
+ * Modern Crimson & Obsidian Dark Theme (Outfit Typography)
  */
 
 /* Light Mode */
 :root {
-  --ifm-color-primary: #00aa55;
-  --ifm-color-primary-dark: #009a4d;
-  --ifm-color-primary-darker: #008f48;
-  --ifm-color-primary-darkest: #00753b;
-  --ifm-color-primary-light: #00ba5d;
-  --ifm-color-primary-lighter: #00c562;
-  --ifm-color-primary-lightest: #00df6f;
+  --ifm-color-primary: #ed1e3a;
+  --ifm-color-primary-dark: #d6152f;
+  --ifm-color-primary-darker: #c4132b;
+  --ifm-color-primary-darkest: #9c0f22;
+  --ifm-color-primary-light: #f03c53;
+  --ifm-color-primary-lighter: #f24b60;
+  --ifm-color-primary-lightest: #f77787;
   --ifm-code-font-size: 95%;
-  --ifm-font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  --ifm-font-family-base: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
   --ifm-font-family-monospace: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
-  --ifm-heading-font-weight: 500;
-  --ifm-font-weight-semibold: 500;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 170, 85, 0.1);
-  --ifm-background-color: #fafafa;
-  --ifm-background-surface-color: #f0f0f0;
-  --ifm-navbar-background-color: #fafafa;
+  --ifm-heading-font-weight: 600;
+  --ifm-font-weight-semibold: 600;
+  --docusaurus-highlighted-code-line-bg: rgba(237, 30, 58, 0.08);
+  --ifm-background-color: #ffffff;
+  --ifm-background-surface-color: #f8f9fa;
+  --ifm-navbar-background-color: #ffffff;
   --ifm-footer-background-color: #0a0a0a;
   --ifm-footer-color: #fafafa;
+  --ifm-toc-border-color: #e5e7eb;
 }
 
 /* Dark Mode */
 [data-theme='dark'] {
-  --ifm-color-primary: #00ff88;
-  --ifm-color-primary-dark: #00e67a;
-  --ifm-color-primary-darker: #00d973;
-  --ifm-color-primary-darkest: #00b35f;
-  --ifm-color-primary-light: #1aff94;
-  --ifm-color-primary-lighter: #33ff9f;
-  --ifm-color-primary-lightest: #66ffb8;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 255, 136, 0.1);
+  --ifm-color-primary: #ff2d55;
+  --ifm-color-primary-dark: #f41f47;
+  --ifm-color-primary-darker: #e6153c;
+  --ifm-color-primary-darkest: #c70c30;
+  --ifm-color-primary-light: #ff4b6d;
+  --ifm-color-primary-lighter: #ff5a79;
+  --ifm-color-primary-lightest: #ff889f;
+  --docusaurus-highlighted-code-line-bg: rgba(255, 45, 85, 0.12);
   --ifm-background-color: #0a0a0a;
-  --ifm-background-surface-color: #111111;
+  --ifm-background-surface-color: #141414;
   --ifm-navbar-background-color: #0a0a0a;
   --ifm-footer-background-color: #000000;
+  --ifm-toc-border-color: #262626;
 }
 
 /* Global Typography */
 html {
   font-size: 16px;
+  font-family: 'Outfit', sans-serif;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -187,7 +191,7 @@ blockquote {
   left: 5%;
   width: 500px;
   height: 500px;
-  background: radial-gradient(circle, rgba(0, 255, 136, 0.15) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(255, 45, 85, 0.15) 0%, transparent 70%);
   border-radius: 50%;
   filter: blur(80px);
   pointer-events: none;
@@ -204,7 +208,7 @@ blockquote {
   right: 5%;
   width: 400px;
   height: 400px;
-  background: radial-gradient(circle, rgba(0, 212, 255, 0.12) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(237, 30, 58, 0.1) 0%, transparent 70%);
   border-radius: 50%;
   filter: blur(60px);
   pointer-events: none;
@@ -216,13 +220,13 @@ blockquote {
 :root .main-wrapper:has(.docs-wrapper)::before,
 :root .main-wrapper:has(.docMainContainer)::before,
 :root .main-wrapper:has([class*="docMainContainer"])::before {
-  background: radial-gradient(circle, rgba(0, 170, 85, 0.1) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(237, 30, 58, 0.08) 0%, transparent 70%);
 }
 
 :root .main-wrapper:has(.docs-wrapper)::after,
 :root .main-wrapper:has(.docMainContainer)::after,
 :root .main-wrapper:has([class*="docMainContainer"])::after {
-  background: radial-gradient(circle, rgba(0, 153, 204, 0.08) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(244, 63, 94, 0.06) 0%, transparent 70%);
 }
 
 /* Subtle grid pattern overlay for docs */
