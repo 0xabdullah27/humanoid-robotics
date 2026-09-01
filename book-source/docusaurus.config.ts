@@ -184,7 +184,7 @@ const config: Config = {
       copyright: `Copyright © ${new Date().getFullYear()} Vectra Physical AI & Humanoid Robotics. Engineered for Next-Gen Autonomous Systems.`,
     },
     prism: {
-      theme: prismThemes.dracula,
+      theme: prismThemes.github,
       darkTheme: prismThemes.dracula,
     },
   } satisfies Preset.ThemeConfig,
