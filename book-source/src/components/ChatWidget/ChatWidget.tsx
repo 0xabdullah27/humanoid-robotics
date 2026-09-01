@@ -186,7 +186,6 @@ export const ChatWidget: React.FC<ChatWidgetProps> = ({ apiEndpoint }) => {
   const clearChat = () => {
     localStorage.removeItem('docusaurus_chat_history');
     setWelcomeMessage();
-    setCurrentSessionId(`sess_${Date.now()}`);
   };
 
   const quickPrompts = [
