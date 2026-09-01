@@ -1,395 +1,331 @@
-import { useState, useEffect, useCallback, type ReactNode } from 'react';
+import React, { type ReactNode } from 'react';
 import Link from '@docusaurus/Link';
 import Layout from '@theme/Layout';
+import {
+  Bot,
+  Cpu,
+  Terminal,
+  Layers,
+  Zap,
+  Compass,
+  Eye,
+  BrainCircuit,
+  Boxes,
+  Code2,
+  Gamepad2,
+  Navigation,
+  Sparkles,
+  ArrowRight,
+  CheckCircle2,
+  Target,
+  ShieldCheck,
+  Globe,
+  Radio,
+  Activity,
+  Mic,
+  Workflow,
+  ChevronRight,
+  HardDrive,
+  Award
+} from 'lucide-react';
 
 import styles from './index.module.css';
 
-// Animated Robot Component with Cursor-Tracking Eyes
-function AnimatedRobot() {
-  const [eyePosition, setEyePosition] = useState({ x: 0, y: 0 });
-  const [isBlinking, setIsBlinking] = useState(false);
-
-  const handleMouseMove = useCallback((e: MouseEvent) => {
-    // Get the robot container position
-    const robotElement = document.getElementById('robot-container');
-    if (!robotElement) return;
-
-    const rect = robotElement.getBoundingClientRect();
-    const robotCenterX = rect.left + rect.width / 2;
-    const robotCenterY = rect.top + rect.height / 3; // Eyes are in upper third
-
-    // Calculate angle and distance from robot center to cursor
-    const deltaX = e.clientX - robotCenterX;
-    const deltaY = e.clientY - robotCenterY;
-
-    // Limit eye movement range
-    const maxMove = 8;
-    const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-    const normalizedDistance = Math.min(distance / 300, 1);
-
-    const moveX = (deltaX / (distance || 1)) * maxMove * normalizedDistance;
-    const moveY = (deltaY / (distance || 1)) * maxMove * normalizedDistance;
-
-    setEyePosition({ x: moveX, y: moveY });
-  }, []);
-
-  useEffect(() => {
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, [handleMouseMove]);
-
-  // Random blinking effect
-  useEffect(() => {
-    const blinkInterval = setInterval(() => {
-      if (Math.random() > 0.7) {
-        setIsBlinking(true);
-        setTimeout(() => setIsBlinking(false), 150);
-      }
-    }, 2000);
-
-    return () => clearInterval(blinkInterval);
-  }, []);
-
-  return (
-    <div id="robot-container" className={styles.robotContainer}>
-      <svg
-        viewBox="0 0 200 280"
-        className={styles.robotSvg}
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        {/* Definitions for gradients and filters */}
-        <defs>
-          {/* Body gradient */}
-          <linearGradient id="bodyGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#2a2a3e" />
-            <stop offset="50%" stopColor="#1a1a2e" />
-            <stop offset="100%" stopColor="#0f0f1a" />
-          </linearGradient>
-
-          {/* Accent gradient */}
-          <linearGradient id="accentGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#00ff88" />
-            <stop offset="100%" stopColor="#00aa55" />
-          </linearGradient>
-
-          {/* Eye glow */}
-          <radialGradient id="eyeGlow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#00ffff" stopOpacity="1" />
-            <stop offset="70%" stopColor="#00aaff" stopOpacity="0.8" />
-            <stop offset="100%" stopColor="#0066ff" stopOpacity="0" />
-          </radialGradient>
-
-          {/* Core glow */}
-          <radialGradient id="coreGlow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#00ff88" stopOpacity="1" />
-            <stop offset="60%" stopColor="#00ff88" stopOpacity="0.5" />
-            <stop offset="100%" stopColor="#00ff88" stopOpacity="0" />
-          </radialGradient>
-
-          {/* Glow filter */}
-          <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="3" result="coloredBlur" />
-            <feMerge>
-              <feMergeNode in="coloredBlur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-
-          {/* Strong glow filter */}
-          <filter id="strongGlow" x="-100%" y="-100%" width="300%" height="300%">
-            <feGaussianBlur stdDeviation="6" result="coloredBlur" />
-            <feMerge>
-              <feMergeNode in="coloredBlur" />
-              <feMergeNode in="coloredBlur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-        </defs>
-
-        {/* Antenna */}
-        <g className={styles.antenna}>
-          <line x1="100" y1="25" x2="100" y2="5" stroke="#00ff88" strokeWidth="2" />
-          <circle cx="100" cy="5" r="4" fill="#00ff88" filter="url(#strongGlow)" className={styles.antennaLight} />
-        </g>
-
-        {/* Head */}
-        <g className={styles.robotHead}>
-          {/* Head base */}
-          <rect x="55" y="25" width="90" height="70" rx="15" fill="url(#bodyGradient)" stroke="#00ff88" strokeWidth="1.5" />
-
-          {/* Visor/Face plate */}
-          <rect x="62" y="35" width="76" height="45" rx="10" fill="#0a0a15" stroke="#00aaff" strokeWidth="1" opacity="0.9" />
-
-          {/* Eyes container */}
-          <g className={styles.eyes}>
-            {/* Left eye socket */}
-            <ellipse cx="80" cy="57" rx="14" ry={isBlinking ? 2 : 12} fill="#001122" className={styles.eyeSocket} />
-            {/* Left eye */}
-            <ellipse
-              cx={80 + eyePosition.x}
-              cy={57 + eyePosition.y}
-              rx="8"
-              ry={isBlinking ? 1 : 8}
-              fill="url(#eyeGlow)"
-              filter="url(#glow)"
-              className={styles.eye}
-            />
-            {/* Left pupil */}
-            <circle
-              cx={80 + eyePosition.x * 1.2}
-              cy={57 + eyePosition.y * 1.2}
-              r={isBlinking ? 0 : 3}
-              fill="#ffffff"
-              className={styles.pupil}
-            />
-
-            {/* Right eye socket */}
-            <ellipse cx="120" cy="57" rx="14" ry={isBlinking ? 2 : 12} fill="#001122" className={styles.eyeSocket} />
-            {/* Right eye */}
-            <ellipse
-              cx={120 + eyePosition.x}
-              cy={57 + eyePosition.y}
-              rx="8"
-              ry={isBlinking ? 1 : 8}
-              fill="url(#eyeGlow)"
-              filter="url(#glow)"
-              className={styles.eye}
-            />
-            {/* Right pupil */}
-            <circle
-              cx={120 + eyePosition.x * 1.2}
-              cy={57 + eyePosition.y * 1.2}
-              r={isBlinking ? 0 : 3}
-              fill="#ffffff"
-              className={styles.pupil}
-            />
-          </g>
-
-          {/* Mouth/Speaker grille */}
-          <g className={styles.mouth}>
-            <rect x="85" y="72" width="30" height="3" rx="1.5" fill="#00ff88" opacity="0.6" />
-          </g>
-
-          {/* Head side lights */}
-          <circle cx="58" cy="60" r="3" fill="#00ff88" filter="url(#glow)" className={styles.sideLight} />
-          <circle cx="142" cy="60" r="3" fill="#00ff88" filter="url(#glow)" className={styles.sideLight} />
-        </g>
-
-        {/* Neck */}
-        <rect x="85" y="95" width="30" height="15" rx="3" fill="url(#bodyGradient)" stroke="#333" strokeWidth="1" />
-        <rect x="90" y="98" width="20" height="2" fill="#00ff88" opacity="0.5" />
-        <rect x="90" y="103" width="20" height="2" fill="#00ff88" opacity="0.5" />
-
-        {/* Body/Torso */}
-        <g className={styles.robotBody}>
-          {/* Main torso */}
-          <path
-            d="M50 110 L60 110 L65 115 L135 115 L140 110 L150 110 L155 120 L155 190 L145 200 L55 200 L45 190 L45 120 Z"
-            fill="url(#bodyGradient)"
-            stroke="#00ff88"
-            strokeWidth="1.5"
-          />
-
-          {/* Chest plate */}
-          <rect x="70" y="125" width="60" height="50" rx="8" fill="#0a0a15" stroke="#00aaff" strokeWidth="1" opacity="0.8" />
-
-          {/* Core energy */}
-          <circle cx="100" cy="150" r="18" fill="url(#coreGlow)" filter="url(#strongGlow)" className={styles.core} />
-          <circle cx="100" cy="150" r="10" fill="#00ff88" className={styles.coreInner} />
-          <circle cx="100" cy="150" r="5" fill="#ffffff" opacity="0.8" />
-
-          {/* Chest details */}
-          <rect x="72" y="178" width="56" height="3" rx="1.5" fill="#00ff88" opacity="0.4" />
-          <rect x="72" y="184" width="40" height="2" rx="1" fill="#00aaff" opacity="0.3" />
-
-          {/* Shoulder joints */}
-          <circle cx="45" cy="120" r="10" fill="url(#bodyGradient)" stroke="#00ff88" strokeWidth="1" />
-          <circle cx="155" cy="120" r="10" fill="url(#bodyGradient)" stroke="#00ff88" strokeWidth="1" />
-          <circle cx="45" cy="120" r="4" fill="#00aaff" filter="url(#glow)" />
-          <circle cx="155" cy="120" r="4" fill="#00aaff" filter="url(#glow)" />
-        </g>
-
-        {/* Arms */}
-        <g className={styles.leftArm}>
-          {/* Upper arm */}
-          <rect x="20" y="120" width="20" height="45" rx="5" fill="url(#bodyGradient)" stroke="#444" strokeWidth="1" />
-          <rect x="24" y="130" width="12" height="3" fill="#00ff88" opacity="0.4" />
-
-          {/* Elbow joint */}
-          <circle cx="30" cy="170" r="8" fill="url(#bodyGradient)" stroke="#00aaff" strokeWidth="1" />
-
-          {/* Lower arm */}
-          <rect x="22" y="175" width="16" height="40" rx="4" fill="url(#bodyGradient)" stroke="#444" strokeWidth="1" />
-
-          {/* Hand */}
-          <ellipse cx="30" cy="220" rx="10" ry="8" fill="url(#bodyGradient)" stroke="#00ff88" strokeWidth="1" />
-          <circle cx="30" cy="220" r="4" fill="#00aaff" filter="url(#glow)" />
-        </g>
-
-        <g className={styles.rightArm}>
-          {/* Upper arm */}
-          <rect x="160" y="120" width="20" height="45" rx="5" fill="url(#bodyGradient)" stroke="#444" strokeWidth="1" />
-          <rect x="164" y="130" width="12" height="3" fill="#00ff88" opacity="0.4" />
-
-          {/* Elbow joint */}
-          <circle cx="170" cy="170" r="8" fill="url(#bodyGradient)" stroke="#00aaff" strokeWidth="1" />
-
-          {/* Lower arm */}
-          <rect x="162" y="175" width="16" height="40" rx="4" fill="url(#bodyGradient)" stroke="#444" strokeWidth="1" />
-
-          {/* Hand */}
-          <ellipse cx="170" cy="220" rx="10" ry="8" fill="url(#bodyGradient)" stroke="#00ff88" strokeWidth="1" />
-          <circle cx="170" cy="220" r="4" fill="#00aaff" filter="url(#glow)" />
-        </g>
-
-        {/* Waist */}
-        <rect x="60" y="200" width="80" height="15" rx="5" fill="url(#bodyGradient)" stroke="#333" strokeWidth="1" />
-        <rect x="80" y="204" width="40" height="3" fill="#00ff88" opacity="0.3" />
-
-        {/* Legs */}
-        <g className={styles.leftLeg}>
-          {/* Hip joint */}
-          <circle cx="75" cy="220" r="8" fill="url(#bodyGradient)" stroke="#00aaff" strokeWidth="1" />
-
-          {/* Upper leg */}
-          <rect x="65" y="225" width="20" height="35" rx="5" fill="url(#bodyGradient)" stroke="#444" strokeWidth="1" />
-
-          {/* Knee joint */}
-          <circle cx="75" cy="265" r="6" fill="url(#bodyGradient)" stroke="#00ff88" strokeWidth="1" />
-
-          {/* Lower leg */}
-          <rect x="67" y="268" width="16" height="30" rx="4" fill="url(#bodyGradient)" stroke="#444" strokeWidth="1" />
-
-          {/* Foot */}
-          <ellipse cx="75" cy="302" rx="14" ry="6" fill="url(#bodyGradient)" stroke="#00ff88" strokeWidth="1" />
-        </g>
-
-        <g className={styles.rightLeg}>
-          {/* Hip joint */}
-          <circle cx="125" cy="220" r="8" fill="url(#bodyGradient)" stroke="#00aaff" strokeWidth="1" />
-
-          {/* Upper leg */}
-          <rect x="115" y="225" width="20" height="35" rx="5" fill="url(#bodyGradient)" stroke="#444" strokeWidth="1" />
-
-          {/* Knee joint */}
-          <circle cx="125" cy="265" r="6" fill="url(#bodyGradient)" stroke="#00ff88" strokeWidth="1" />
-
-          {/* Lower leg */}
-          <rect x="117" y="268" width="16" height="30" rx="4" fill="url(#bodyGradient)" stroke="#444" strokeWidth="1" />
-
-          {/* Foot */}
-          <ellipse cx="125" cy="302" rx="14" ry="6" fill="url(#bodyGradient)" stroke="#00ff88" strokeWidth="1" />
-        </g>
-
-        {/* Ground shadow */}
-        <ellipse cx="100" cy="310" rx="50" ry="8" fill="rgba(0, 255, 136, 0.1)" className={styles.shadow} />
-      </svg>
-
-      {/* Particle effects around robot */}
-      <div className={styles.particles}>
-        <span className={styles.particle}></span>
-        <span className={styles.particle}></span>
-        <span className={styles.particle}></span>
-        <span className={styles.particle}></span>
-        <span className={styles.particle}></span>
-        <span className={styles.particle}></span>
-      </div>
-    </div>
-  );
-}
-
+// Hero Section
 function HeroSection() {
   return (
     <section className={styles.hero}>
-      <div className={styles.heroBackground}>
-        <div className={styles.gridLines}></div>
-        <div className={styles.glowOrb}></div>
-        <div className={styles.glowOrb2}></div>
-      </div>
+      <div className={styles.cyberGridBg}></div>
+      <div className={styles.glowOrbCyan}></div>
+      <div className={styles.glowOrbIndigo}></div>
 
-      <div className={styles.heroWrapper}>
+      <div className={styles.heroContainer}>
         <div className={styles.heroContent}>
-          <div className={styles.badge}>
-            <span className={styles.badgeIcon}>◈</span>
-            <span>Vectra - Physical AI & Robotics</span>
+          {/* System Status Pill */}
+          <div className={styles.statusPill}>
+            <span className={styles.statusDot}></span>
+            <span className={styles.statusText}>SYSTEM ONLINE // ROS 2 JAZZY & ISAAC SIM 4.2</span>
           </div>
+
           <h1 className={styles.heroTitle}>
-            <span className={styles.titleLine}>AI learned to think.</span>
-            <span className={styles.titleLine}>
-              <span className={styles.highlight}>Now teach it to move.</span>
+            <span className={styles.titleSub}>AI Learned to Think in Tokens.</span>
+            <span className={styles.titleMain}>
+              Now Master <span className={styles.neonHighlight}>Physical AI</span> to Make it Move.
             </span>
           </h1>
+
           <p className={styles.heroSubtitle}>
-            Master the complete pipeline from ROS 2 foundations to voice-controlled
-            humanoid robots. Build autonomous systems that perceive, reason, and act
-            in the physical world.
+            The definitive blueprint for engineering autonomous humanoid systems. From ROS 2 distributed
+            robotics and physics simulation to GPU-accelerated VSLAM, Nav2 motion planning, and
+            Vision-Language-Action (VLA) voice agents.
           </p>
-          <div className={styles.stats}>
-            <div className={styles.stat}>
-              <span className={styles.statNumber}>10</span>
-              <span className={styles.statLabel}>Chapters</span>
+
+          {/* Telemetry Metrics Strip */}
+          <div className={styles.metricsGrid}>
+            <div className={styles.metricItem}>
+              <span className={styles.metricVal}>10</span>
+              <span className={styles.metricLabel}>Chapters</span>
             </div>
-            <div className={styles.statDivider}></div>
-            <div className={styles.stat}>
-              <span className={styles.statNumber}>80+</span>
-              <span className={styles.statLabel}>Lessons</span>
+            <div className={styles.metricDivider}></div>
+            <div className={styles.metricItem}>
+              <span className={styles.metricVal}>80+</span>
+              <span className={styles.metricLabel}>Hands-On Lessons</span>
             </div>
-            <div className={styles.statDivider}></div>
-            <div className={styles.stat}>
-              <span className={styles.statNumber}>4</span>
-              <span className={styles.statLabel}>Parts</span>
+            <div className={styles.metricDivider}></div>
+            <div className={styles.metricItem}>
+              <span className={styles.metricVal}>4</span>
+              <span className={styles.metricLabel}>Capstone Systems</span>
+            </div>
+            <div className={styles.metricDivider}></div>
+            <div className={styles.metricItem}>
+              <span className={styles.metricVal}>100%</span>
+              <span className={styles.metricLabel}>Production Code</span>
             </div>
           </div>
+
+          {/* CTA Button Group */}
           <div className={styles.ctaGroup}>
             <Link className={styles.ctaPrimary} to="/docs/intro">
-              <span>Start Learning</span>
-              <svg className={styles.ctaArrow} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M5 12h14M12 5l7 7-7 7"/>
-              </svg>
+              <Sparkles className={styles.btnIcon} size={18} />
+              <span>Launch Curriculum</span>
+              <ArrowRight className={styles.arrowIcon} size={18} />
             </Link>
+
             <Link className={styles.ctaSecondary} to="/docs/Part-1-ROS2-Foundation">
-              View Curriculum
+              <Terminal className={styles.btnIcon} size={18} />
+              <span>Explore ROS 2 Stack</span>
             </Link>
           </div>
         </div>
-
-        <div className={styles.heroRobot}>
-          <AnimatedRobot />
-        </div>
-      </div>
-
-      <div className={styles.scrollIndicator}>
-        <span>Scroll to explore</span>
-        <div className={styles.scrollLine}></div>
       </div>
     </section>
   );
 }
 
+// Tech Stack Marquee (Zero Emojis, Pure Tech Vector Icons)
 function TechStackSection() {
-  const technologies = [
-    { name: 'ROS 2', icon: '🤖' },
-    { name: 'Python', icon: '🐍' },
-    { name: 'Gazebo', icon: '🌍' },
-    { name: 'Unity', icon: '🎮' },
-    { name: 'Isaac Sim', icon: '⚡' },
-    { name: 'Nav2', icon: '🧭' },
-    { name: 'VSLAM', icon: '👁️' },
-    { name: 'LLMs', icon: '🧠' },
+  const techList = [
+    { name: 'ROS 2 Jazzy', icon: Terminal, desc: 'Robotic Middleware' },
+    { name: 'Python rclpy', icon: Code2, desc: 'Agent Node Architecture' },
+    { name: 'NVIDIA Isaac Sim', icon: Zap, desc: 'GPU-Accelerated Sim' },
+    { name: 'Isaac ROS VSLAM', icon: Eye, desc: 'Hardware Visual Odometry' },
+    { name: 'Gazebo Fortress', icon: Boxes, desc: 'Rigid Body Dynamics' },
+    { name: 'Unity HRI', icon: Gamepad2, desc: 'Human-Avatar Interface' },
+    { name: 'Nav2 Stack', icon: Navigation, desc: 'Humanoid Path Planning' },
+    { name: 'VLA & LLMs', icon: BrainCircuit, desc: 'Voice-to-Action Models' },
   ];
 
   return (
     <section className={styles.techStack}>
-      <div className={styles.techStackContent}>
-        <p className={styles.techLabel}>Technologies You'll Master</p>
-        <div className={styles.techScroll}>
-          <div className={styles.techTrack}>
-            {[...technologies, ...technologies].map((tech, index) => (
-              <div key={index} className={styles.techItem}>
-                <span className={styles.techIcon}>{tech.icon}</span>
-                <span className={styles.techName}>{tech.name}</span>
+      <div className={styles.techStackInner}>
+        <div className={styles.techStackHeader}>
+          <Cpu size={16} className={styles.techHeaderIcon} />
+          <span>STANDARDIZED PHYSICAL AI & ROBOTICS ARCHITECTURE</span>
+        </div>
+
+        <div className={styles.techGrid}>
+          {techList.map((item, idx) => {
+            const Icon = item.icon;
+            return (
+              <div key={idx} className={styles.techCard}>
+                <div className={styles.techIconWrap}>
+                  <Icon size={20} />
+                </div>
+                <div className={styles.techInfo}>
+                  <span className={styles.techTitle}>{item.name}</span>
+                  <span className={styles.techDesc}>{item.desc}</span>
+                </div>
               </div>
-            ))}
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// 4 Core Learning Pillars
+function JourneySection() {
+  const pillars = [
+    {
+      index: '01',
+      tag: 'MIDDLEWARE BACKBONE',
+      title: 'The Robotic Nervous System',
+      subtitle: 'ROS 2 Core & Humanoid Modeling',
+      desc: 'Architect asynchronous nodes, topics, services, and action clients in Python. Construct modular URDF/Xacro kinematic chains and coordinate frames for humanoid arms and torsos.',
+      highlights: ['ROS 2 Distributed Graph', 'rclpy Async Callback Executors', 'URDF Collision & Inertia Physics'],
+      color: '#00f0ff',
+      link: '/docs/Part-1-ROS2-Foundation',
+      icon: Terminal,
+    },
+    {
+      index: '02',
+      tag: 'SIMULATION ENVIRONMENT',
+      title: 'The Digital Twin',
+      subtitle: 'Gazebo Physics, Unity HRI & Sensors',
+      desc: 'Build high-fidelity virtual proving grounds. Simulate gravity, contact friction, LiDAR point-clouds, stereo RGB-D cameras, and 6-axis IMUs with realistic sensor noise models.',
+      highlights: ['Gazebo Multi-Body Physics', 'Unity Interactive Avatars', 'Full Sensor Suite Simulation'],
+      color: '#00ff9d',
+      link: '/docs/Part-2-Digital-Twin',
+      icon: Boxes,
+    },
+    {
+      index: '03',
+      tag: 'PERCEPTION & NAVIGATION',
+      title: 'The AI Brain',
+      subtitle: 'NVIDIA Isaac Sim, VSLAM & Nav2',
+      desc: 'Harness NVIDIA Omniverse and RTX ray-tracing for synthetic data generation. Deploy CUDA-accelerated Isaac ROS Visual SLAM and Nav2 behavior tree path planning.',
+      highlights: ['Isaac Sim Domain Randomization', 'CUDA-Accelerated Visual SLAM', 'Nav2 Humanoid Costmaps & Planners'],
+      color: '#6366f1',
+      link: '/docs/Part-3-Advanced-Simulation-Perception',
+      icon: Eye,
+    },
+    {
+      index: '04',
+      tag: 'MULTIMODAL INTELLIGENCE',
+      title: 'Voice to Action',
+      subtitle: 'Vision-Language-Action Pipeline',
+      desc: 'Connect whisper speech recognition and multimodal LLM planners directly to ROS 2 controllers. Enable natural voice instructions to translate into real spatial humanoid actions.',
+      highlights: ['Real-Time Audio & VAD Stream', 'Structured Intent Decomposition', 'Closed-Loop Trajectory Execution'],
+      color: '#ff2d55',
+      link: '/docs/Part-4-Vision-Language-Action',
+      icon: BrainCircuit,
+    },
+  ];
+
+  return (
+    <section className={styles.journeySection}>
+      <div className={styles.sectionHeader}>
+        <div className={styles.sectionBadge}>
+          <Workflow size={14} />
+          <span>CURRICULUM ARCHITECTURE</span>
+        </div>
+        <h2 className={styles.sectionTitle}>Four Pillars to Autonomous Humanoids</h2>
+        <p className={styles.sectionSubtitle}>
+          A step-by-step engineering journey from low-level middleware communication to
+          voice-directed physical AI agents.
+        </p>
+      </div>
+
+      <div className={styles.pillarsGrid}>
+        {pillars.map((pillar) => {
+          const PillarIcon = pillar.icon;
+          return (
+            <Link
+              key={pillar.index}
+              to={pillar.link}
+              className={styles.pillarCard}
+              style={{ '--pillar-accent': pillar.color } as React.CSSProperties}
+            >
+              <div className={styles.pillarHeader}>
+                <div className={styles.pillarIndexBadge}>
+                  <span>{pillar.index}</span>
+                </div>
+                <div className={styles.pillarTag}>{pillar.tag}</div>
+                <div className={styles.pillarIcon}>
+                  <PillarIcon size={22} />
+                </div>
+              </div>
+
+              <h3 className={styles.pillarTitle}>{pillar.title}</h3>
+              <h4 className={styles.pillarSubtitle}>{pillar.subtitle}</h4>
+              <p className={styles.pillarDesc}>{pillar.desc}</p>
+
+              <div className={styles.pillarHighlights}>
+                {pillar.highlights.map((item, i) => (
+                  <div key={i} className={styles.highlightItem}>
+                    <CheckCircle2 size={13} className={styles.highlightIcon} />
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div className={styles.pillarFooter}>
+                <span>Explore Track {pillar.index}</span>
+                <ChevronRight size={16} className={styles.pillarArrow} />
+              </div>
+            </Link>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+// End-to-End Voice-to-Action Interactive Architecture
+function PipelineSection() {
+  return (
+    <section className={styles.pipelineSection}>
+      <div className={styles.sectionHeader}>
+        <div className={styles.sectionBadge}>
+          <Activity size={14} />
+          <span>END-TO-END PIPELINE</span>
+        </div>
+        <h2 className={styles.sectionTitle}>From Natural Voice to Motor Actuation</h2>
+        <p className={styles.sectionSubtitle}>
+          Experience how modern multimodal physical AI decomposes raw acoustic input into
+          verified kinematics trajectories.
+        </p>
+      </div>
+
+      <div className={styles.pipelineFlow}>
+        <div className={styles.flowCard}>
+          <div className={styles.flowIconBox}>
+            <Mic size={24} />
+          </div>
+          <span className={styles.flowStepNum}>STEP 01</span>
+          <h4 className={styles.flowStepTitle}>Acoustic Stream</h4>
+          <p className={styles.flowStepDesc}>Real-time VAD voice capture + Whisper ASR transcription.</p>
+          <div className={styles.flowCode}>
+            <code>"Navigate to table, inspect red cylinder"</code>
+          </div>
+        </div>
+
+        <div className={styles.flowConnector}>
+          <ArrowRight size={20} className={styles.connectorArrow} />
+        </div>
+
+        <div className={styles.flowCard}>
+          <div className={styles.flowIconBox}>
+            <BrainCircuit size={24} />
+          </div>
+          <span className={styles.flowStepNum}>STEP 02</span>
+          <h4 className={styles.flowStepTitle}>VLA Intent Planner</h4>
+          <p className={styles.flowStepDesc}>Spatial reasoning, task decomposition & JSON schema validation.</p>
+          <div className={styles.flowCode}>
+            <code>&#123; goal: "NAV_TARGET", object: "cylinder_01" &#125;</code>
+          </div>
+        </div>
+
+        <div className={styles.flowConnector}>
+          <ArrowRight size={20} className={styles.connectorArrow} />
+        </div>
+
+        <div className={styles.flowCard}>
+          <div className={styles.flowIconBox}>
+            <Navigation size={24} />
+          </div>
+          <span className={styles.flowStepNum}>STEP 03</span>
+          <h4 className={styles.flowStepTitle}>Nav2 & VSLAM</h4>
+          <p className={styles.flowStepDesc}>Costmap generation, dynamic obstacle avoidance & odometry.</p>
+          <div className={styles.flowCode}>
+            <code>cmd_vel: [vx: 0.6m/s, wz: 0.15rad/s]</code>
+          </div>
+        </div>
+
+        <div className={styles.flowConnector}>
+          <ArrowRight size={20} className={styles.connectorArrow} />
+        </div>
+
+        <div className={styles.flowCard}>
+          <div className={styles.flowIconBox}>
+            <Bot size={24} />
+          </div>
+          <span className={styles.flowStepNum}>STEP 04</span>
+          <h4 className={styles.flowStepTitle}>Actuator Execution</h4>
+          <p className={styles.flowStepDesc}>Closed-loop PID joint control in Gazebo & Isaac Sim.</p>
+          <div className={styles.flowCode}>
+            <code>STATUS: TARGET_REACHED (100% OK)</code>
           </div>
         </div>
       </div>
@@ -397,244 +333,123 @@ function TechStackSection() {
   );
 }
 
-function JourneySection() {
-  const parts = [
-    {
-      number: '01',
-      title: 'The Robotic Nervous System',
-      subtitle: 'ROS 2 Foundation',
-      description: 'Master nodes, topics, services, and actions. Build the communication backbone that connects every sensor and actuator.',
-      chapters: ['ROS 2 Core Concepts', 'Python Development with rclpy', 'URDF & Humanoid Modeling'],
-      color: '#00ff88',
-      link: '/docs/Part-1-ROS2-Foundation',
-    },
-    {
-      number: '02',
-      title: 'The Digital Twin',
-      subtitle: 'Simulation Mastery',
-      description: 'Create high-fidelity virtual environments. Test algorithms safely before deploying to real hardware.',
-      chapters: ['Gazebo Physics Simulation', 'Unity for HRI', 'Sensor Simulation'],
-      color: '#00d4ff',
-      link: '/docs/Part-2-Digital-Twin',
-    },
-    {
-      number: '03',
-      title: 'The AI Brain',
-      subtitle: 'Advanced Perception',
-      description: 'Harness GPU-accelerated AI for perception. Enable your robot to see, map, and navigate autonomously.',
-      chapters: ['NVIDIA Isaac Sim', 'Visual SLAM', 'Nav2 Navigation'],
-      color: '#ff6b6b',
-      link: '/docs/Part-3-Advanced-Simulation-Perception',
-    },
-    {
-      number: '04',
-      title: 'Voice to Action',
-      subtitle: 'VLA Pipeline',
-      description: 'Connect language models to robot control. Speak commands, watch robots execute complex tasks.',
-      chapters: ['Speech Recognition', 'LLM Task Planning', 'Action Execution'],
-      color: '#ffd93d',
-      link: '/docs/Part-4-Vision-Language-Action',
-    },
-  ];
-
-  return (
-    <section className={styles.journey}>
-      <div className={styles.journeyContent}>
-        <div className={styles.sectionHeader}>
-          <span className={styles.sectionTag}>The Learning Path</span>
-          <h2 className={styles.sectionTitle}>Your Journey to Physical AI</h2>
-          <p className={styles.sectionSubtitle}>
-            Four comprehensive parts take you from fundamentals to building
-            voice-controlled autonomous humanoids.
-          </p>
-        </div>
-        <div className={styles.partsGrid}>
-          {parts.map((part, index) => (
-            <Link
-              key={part.number}
-              to={part.link}
-              className={styles.partCard}
-              style={{ '--card-accent': part.color } as React.CSSProperties}
-            >
-              <div className={styles.partHeader}>
-                <span className={styles.partNumber}>{part.number}</span>
-                <span className={styles.partSubtitle}>{part.subtitle}</span>
-              </div>
-              <h3 className={styles.partTitle}>{part.title}</h3>
-              <p className={styles.partDescription}>{part.description}</p>
-              <div className={styles.partChapters}>
-                {part.chapters.map((chapter, i) => (
-                  <span key={i} className={styles.chapterTag}>{chapter}</span>
-                ))}
-              </div>
-              <div className={styles.partFooter}>
-                <span className={styles.exploreLink}>
-                  Explore Part {part.number}
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M5 12h14M12 5l7 7-7 7"/>
-                  </svg>
-                </span>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
+// Features Section
 function FeaturesSection() {
   const features = [
     {
-      icon: '🎯',
-      title: 'Project-Based Learning',
-      description: 'Every chapter builds toward a working capstone project. Learn by doing, not just reading.',
+      icon: Target,
+      title: 'Capstone Project-First',
+      desc: 'Each part culminates in an integrated capstone: balance controllers, sensor suites, realtime SLAM, and voice-commanded navigation.',
     },
     {
-      icon: '🔧',
-      title: 'Production-Ready Code',
-      description: 'All examples use industry-standard tools and practices. Code that actually runs on real robots.',
+      icon: Terminal,
+      title: 'Industry-Grade Python & C++',
+      desc: 'Zero toy code. Production-standard rclpy packages, clean type hints, async executors, and reusable robotic node templates.',
     },
     {
-      icon: '📊',
-      title: 'Progressive Complexity',
-      description: 'Start simple, build complexity. Each lesson builds on the last with clear prerequisites.',
+      icon: Zap,
+      title: 'Hardware Acceleration',
+      desc: 'Harness NVIDIA CUDA, TensorRT, and Isaac ROS for real-time visual odometry and photorealistic synthetic domain randomization.',
     },
     {
-      icon: '🌐',
-      title: 'End-to-End Pipeline',
-      description: 'From sensor data to motor commands. Understand the complete robotics software stack.',
+      icon: ShieldCheck,
+      title: 'Sim-to-Real Verification',
+      desc: 'Test safely inside Gazebo and Isaac Sim before flashing motors on expensive physical humanoid robotics hardware.',
     },
     {
-      icon: '🤝',
+      icon: Globe,
       title: 'Human-Robot Interaction',
-      description: 'Build robots that communicate naturally through voice, gestures, and intuitive interfaces.',
+      desc: 'Bridge Unity 3D human avatars with ROS 2 websockets to construct intuitive multimodal interfaces for spatial agents.',
     },
     {
-      icon: '⚡',
-      title: 'GPU Acceleration',
-      description: 'Leverage NVIDIA Isaac for real-time perception. Train and deploy AI at robot speed.',
+      icon: HardDrive,
+      title: 'Comprehensive Reference',
+      desc: 'Complete URDF diagrams, sensor noise formulas, coordinate transformation rules, and Nav2 costmap configurations.',
     },
   ];
 
   return (
-    <section className={styles.features}>
-      <div className={styles.featuresContent}>
-        <div className={styles.sectionHeader}>
-          <span className={styles.sectionTag}>Why This Book</span>
-          <h2 className={styles.sectionTitle}>Built for Real-World Robotics</h2>
-          <p className={styles.sectionSubtitle}>
-            Not another theory-heavy textbook. This is a hands-on guide to building
-            robots that work.
-          </p>
+    <section className={styles.featuresSection}>
+      <div className={styles.sectionHeader}>
+        <div className={styles.sectionBadge}>
+          <Layers size={14} />
+          <span>ENGINEERING STANDARDS</span>
         </div>
-        <div className={styles.featuresGrid}>
-          {features.map((feature, index) => (
-            <div key={index} className={styles.featureCard}>
-              <span className={styles.featureIcon}>{feature.icon}</span>
-              <h3 className={styles.featureTitle}>{feature.title}</h3>
-              <p className={styles.featureDescription}>{feature.description}</p>
+        <h2 className={styles.sectionTitle}>Engineered for Real-World Robotics</h2>
+        <p className={styles.sectionSubtitle}>
+          Built from the ground up for robotics engineers, AI researchers, and autonomous systems builders.
+        </p>
+      </div>
+
+      <div className={styles.featuresGrid}>
+        {features.map((feat, i) => {
+          const FeatIcon = feat.icon;
+          return (
+            <div key={i} className={styles.featureCard}>
+              <div className={styles.featureIconWrap}>
+                <FeatIcon size={22} />
+              </div>
+              <h3 className={styles.featureTitle}>{feat.title}</h3>
+              <p className={styles.featureDesc}>{feat.desc}</p>
             </div>
-          ))}
-        </div>
+          );
+        })}
       </div>
     </section>
   );
 }
 
-function DemoSection() {
-  return (
-    <section className={styles.demo}>
-      <div className={styles.demoContent}>
-        <div className={styles.sectionHeader}>
-          <span className={styles.sectionTag}>The End Goal</span>
-          <h2 className={styles.sectionTitle}>Voice to Action Pipeline</h2>
-          <p className={styles.sectionSubtitle}>
-            By the end of this book, you'll build a complete system that turns
-            natural language into robot actions.
-          </p>
-        </div>
-        <div className={styles.pipelineDemo}>
-          <div className={styles.pipelineStep}>
-            <div className={styles.stepIcon}>🎤</div>
-            <div className={styles.stepContent}>
-              <span className={styles.stepLabel}>Input</span>
-              <p className={styles.stepText}>"Pick up the red cup and place it on the table"</p>
-            </div>
-          </div>
-          <div className={styles.pipelineArrow}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M5 12h14M12 5l7 7-7 7"/>
-            </svg>
-          </div>
-          <div className={styles.pipelineStep}>
-            <div className={styles.stepIcon}>🧠</div>
-            <div className={styles.stepContent}>
-              <span className={styles.stepLabel}>LLM Planning</span>
-              <p className={styles.stepText}>Task decomposition → Action sequence → Motion planning</p>
-            </div>
-          </div>
-          <div className={styles.pipelineArrow}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M5 12h14M12 5l7 7-7 7"/>
-            </svg>
-          </div>
-          <div className={styles.pipelineStep}>
-            <div className={styles.stepIcon}>🤖</div>
-            <div className={styles.stepContent}>
-              <span className={styles.stepLabel}>Execution</span>
-              <p className={styles.stepText}>Navigate → Grasp → Transport → Place</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
+// Prerequisites & Target Competencies
 function PrerequisitesSection() {
   return (
-    <section className={styles.prerequisites}>
-      <div className={styles.prerequisitesContent}>
+    <section className={styles.prereqSection}>
+      <div className={styles.prereqGrid}>
         <div className={styles.prereqCard}>
-          <h3 className={styles.prereqTitle}>What You Need</h3>
+          <div className={styles.prereqHeader}>
+            <Terminal size={20} className={styles.prereqHeaderIcon} />
+            <h3>Prerequisites</h3>
+          </div>
           <ul className={styles.prereqList}>
             <li>
-              <span className={styles.checkIcon}>✓</span>
-              <span>Basic Python programming experience</span>
+              <CheckCircle2 size={16} className={styles.checkIcon} />
+              <span>Familiarity with Python syntax and object-oriented patterns</span>
             </li>
             <li>
-              <span className={styles.checkIcon}>✓</span>
-              <span>Familiarity with Linux command line</span>
+              <CheckCircle2 size={16} className={styles.checkIcon} />
+              <span>Basic comfort with Linux terminal & shell navigation</span>
             </li>
             <li>
-              <span className={styles.checkIcon}>✓</span>
-              <span>Understanding of basic ML concepts (helpful but not required)</span>
+              <CheckCircle2 size={16} className={styles.checkIcon} />
+              <span>Elementary matrix algebra & coordinate systems (helpful)</span>
             </li>
             <li>
-              <span className={styles.checkIcon}>✓</span>
-              <span>Curiosity and willingness to experiment</span>
+              <CheckCircle2 size={16} className={styles.checkIcon} />
+              <span>Modern PC with Ubuntu 24.04 / 22.04 or WSL2 for simulation</span>
             </li>
           </ul>
         </div>
+
         <div className={styles.prereqCard}>
-          <h3 className={styles.prereqTitle}>What You'll Gain</h3>
+          <div className={styles.prereqHeader}>
+            <Award size={20} className={styles.awardHeaderIcon} />
+            <h3>Competencies You Will Master</h3>
+          </div>
           <ul className={styles.prereqList}>
             <li>
-              <span className={styles.starIcon}>★</span>
-              <span>Deep understanding of robotics middleware (ROS 2)</span>
+              <CheckCircle2 size={16} className={styles.awardCheckIcon} />
+              <span>Full ROS 2 architecture (Nodes, Topics, Actions, Custom Msgs)</span>
             </li>
             <li>
-              <span className={styles.starIcon}>★</span>
-              <span>Ability to build and simulate humanoid robots</span>
+              <CheckCircle2 size={16} className={styles.awardCheckIcon} />
+              <span>Humanoid URDF modeling, joint kinematics & inertia tensors</span>
             </li>
             <li>
-              <span className={styles.starIcon}>★</span>
-              <span>Skills in AI-powered perception and navigation</span>
+              <CheckCircle2 size={16} className={styles.awardCheckIcon} />
+              <span>Photorealistic physics simulation in Gazebo & NVIDIA Isaac Sim</span>
             </li>
             <li>
-              <span className={styles.starIcon}>★</span>
-              <span>Complete voice-to-action system implementation</span>
+              <CheckCircle2 size={16} className={styles.awardCheckIcon} />
+              <span>End-to-end Voice-to-Action physical AI agent pipeline</span>
             </li>
           </ul>
         </div>
@@ -643,25 +458,30 @@ function PrerequisitesSection() {
   );
 }
 
+// Final CTA Launchpad
 function CTASection() {
   return (
-    <section className={styles.cta}>
+    <section className={styles.ctaSection}>
+      <div className={styles.ctaGlow}></div>
       <div className={styles.ctaContent}>
-        <div className={styles.ctaGlow}></div>
-        <h2 className={styles.ctaTitle}>Ready to Build the Future?</h2>
-        <p className={styles.ctaText}>
-          Start your journey from digital AI to physical robotics.
-          No prior robotics experience required.
+        <div className={styles.sectionBadge}>
+          <Sparkles size={14} />
+          <span>START BUILDING</span>
+        </div>
+        <h2 className={styles.ctaTitle}>Ready to Deploy Your First Physical AI Agent?</h2>
+        <p className={styles.ctaSubtitle}>
+          Master the complete robotics software stack from fundamentals to autonomous humanoid systems.
         </p>
+
         <div className={styles.ctaButtons}>
-          <Link className={styles.ctaButtonPrimary} to="/docs/intro">
-            <span>Begin Your Journey</span>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M5 12h14M12 5l7 7-7 7"/>
-            </svg>
+          <Link className={styles.ctaPrimary} to="/docs/intro">
+            <Sparkles size={18} />
+            <span>Start with Chapter 0</span>
+            <ArrowRight size={18} />
           </Link>
-          <Link className={styles.ctaButtonSecondary} to="/docs/Part-1-ROS2-Foundation/ros2-nodes-topics-services">
-            Jump to Chapter 1
+          <Link className={styles.ctaSecondary} to="/docs/Part-1-ROS2-Foundation">
+            <Terminal size={18} />
+            <span>Jump to Part 1: ROS 2</span>
           </Link>
         </div>
       </div>
@@ -672,14 +492,15 @@ function CTASection() {
 export default function Home(): ReactNode {
   return (
     <Layout
-      title="From Digital AI to Physical Robotics"
-      description="Vectra - Master the complete pipeline from ROS 2 foundations to voice-controlled humanoid robots. Build autonomous systems that perceive, reason, and act in the physical world.">
+      title="Physical AI & Humanoid Robotics | Engineering Blueprint"
+      description="Vectra - The complete hands-on guide from ROS 2 foundations to NVIDIA Isaac Sim, Digital Twins, and Voice-to-Action Humanoids."
+    >
       <main className={styles.main}>
         <HeroSection />
         <TechStackSection />
         <JourneySection />
+        <PipelineSection />
         <FeaturesSection />
-        <DemoSection />
         <PrerequisitesSection />
         <CTASection />
       </main>

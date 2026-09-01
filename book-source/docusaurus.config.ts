@@ -69,12 +69,13 @@ const config: Config = {
     // Replace with your project's social card
     image: 'img/docusaurus-social-card.jpg',
     colorMode: {
+      defaultMode: 'dark',
       respectPrefersColorScheme: true,
     },
     navbar: {
-      title: '',
+      title: 'VECTRA',
       logo: {
-        alt: 'Vectra Logo',
+        alt: 'Vectra Physical AI',
         src: 'img/logo.svg',
       },
       items: [
@@ -82,12 +83,34 @@ const config: Config = {
           type: 'docSidebar',
           sidebarId: 'bookSidebar',
           position: 'left',
-          label: 'Book',
+          label: 'Curriculum',
+        },
+        {
+          to: '/docs/Part-1-ROS2-Foundation',
+          position: 'left',
+          label: 'ROS 2 Core',
+        },
+        {
+          to: '/docs/Part-2-Digital-Twin',
+          position: 'left',
+          label: 'Digital Twin',
+        },
+        {
+          to: '/docs/Part-3-Advanced-Simulation-Perception',
+          position: 'left',
+          label: 'Isaac & AI',
+        },
+        {
+          to: '/docs/Part-4-Vision-Language-Action',
+          position: 'left',
+          label: 'VLA Pipeline',
         },
         {
           href: 'https://github.com/0xabdullah27/humanoid-robotics',
-          label: 'GitHub',
           position: 'right',
+          className: 'header-github-link',
+          'aria-label': 'GitHub repository',
+          label: 'GitHub',
         },
       ],
     },
@@ -95,25 +118,70 @@ const config: Config = {
       style: 'dark',
       links: [
         {
-          title: 'Docs',
+          title: 'Curriculum',
           items: [
             {
-              label: 'Introduction',
+              label: '00 // Introduction',
               to: '/docs/intro',
+            },
+            {
+              label: '01 // ROS 2 Nervous System',
+              to: '/docs/Part-1-ROS2-Foundation',
+            },
+            {
+              label: '02 // Digital Twin Simulation',
+              to: '/docs/Part-2-Digital-Twin',
+            },
+            {
+              label: '03 // Isaac Sim & Perception',
+              to: '/docs/Part-3-Advanced-Simulation-Perception',
+            },
+            {
+              label: '04 // Vision-Language-Action',
+              to: '/docs/Part-4-Vision-Language-Action',
             },
           ],
         },
         {
-          title: 'Community',
+          title: 'Ecosystem & Stack',
           items: [
             {
-              label: 'GitHub',
+              label: 'ROS 2 Jazzy & rclpy',
+              href: 'https://docs.ros.org/en/jazzy/',
+            },
+            {
+              label: 'NVIDIA Isaac Sim & ROS',
+              href: 'https://developer.nvidia.com/isaac-sim',
+            },
+            {
+              label: 'Nav2 Autonomous Navigation',
+              href: 'https://nav2.org/',
+            },
+            {
+              label: 'Gazebo & Unity HRI',
+              href: 'https://gazebosim.org/',
+            },
+          ],
+        },
+        {
+          title: 'Project & Source',
+          items: [
+            {
+              label: 'GitHub Repository',
               href: 'https://github.com/0xabdullah27/humanoid-robotics',
+            },
+            {
+              label: 'Issues & Discussions',
+              href: 'https://github.com/0xabdullah27/humanoid-robotics/issues',
+            },
+            {
+              label: 'AI Agentic Copilot',
+              to: '/docs/intro',
             },
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} Vectra. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} Vectra Physical AI & Humanoid Robotics. Engineered for Next-Gen Autonomous Systems.`,
     },
     prism: {
       theme: prismThemes.github,
