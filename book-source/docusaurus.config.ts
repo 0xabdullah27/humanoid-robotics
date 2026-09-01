@@ -31,11 +31,11 @@ const config: Config = {
   // Set the production url of your site here
   url: 'https://0xabdullah27.github.io',
   // Set the /<baseUrl>/ pathname under which your site is served
-  baseUrl: '/',
+  baseUrl: '/humanoid-robotics/',
 
   // GitHub pages deployment config.
   organizationName: '0xabdullah27', // Usually your GitHub org/user name.
-  projectName: 'human-robotics-book', // Usually your repo name.
+  projectName: 'humanoid-robotics', // Usually your repo name.
 
   onBrokenLinks: 'throw',
 
@@ -55,7 +55,7 @@ const config: Config = {
           sidebarPath: './sidebars.ts',
           // Please change this to your repo.
           editUrl:
-            'https://github.com/0xabdullah27/human-robotics-book/edit/main/book-source/docs/',
+            'https://github.com/0xabdullah27/humanoid-robotics/edit/main/book-source/docs/',
         },
         blog: false, // Disable blog functionality for the book
         theme: {
@@ -85,7 +85,7 @@ const config: Config = {
           label: 'Book',
         },
         {
-          href: 'https://github.com/0xabdullah27/human-robotics-book',
+          href: 'https://github.com/0xabdullah27/humanoid-robotics',
           label: 'GitHub',
           position: 'right',
         },
@@ -108,7 +108,7 @@ const config: Config = {
           items: [
             {
               label: 'GitHub',
-              href: 'https://github.com/0xabdullah27/human-robotics-book',
+              href: 'https://github.com/0xabdullah27/humanoid-robotics',
             },
           ],
         },
