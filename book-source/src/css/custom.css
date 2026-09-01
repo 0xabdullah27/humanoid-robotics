@@ -1,43 +1,58 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700;800&display=swap');
 @import "tailwindcss/theme" layer(theme);
 @import "tailwindcss/utilities" layer(utilities);
 
 /**
  * Vectra - Physical AI & Humanoid Robotics
- * State-of-the-art Cybernetic AI Agentic Design System
+ * State-of-the-art Design System (Dual-Engine Light & Dark Modes)
  */
 
-/* Light Mode */
+/* ==============================================================================
+   LIGHT MODE DESIGN SYSTEM
+   ============================================================================== */
 :root {
-  --ifm-color-primary: #0088cc;
-  --ifm-color-primary-dark: #0077b3;
-  --ifm-color-primary-darker: #006699;
-  --ifm-color-primary-darkest: #004d73;
-  --ifm-color-primary-light: #0099e6;
-  --ifm-color-primary-lighter: #1ab2ff;
-  --ifm-color-primary-lightest: #4dc3ff;
-  --color-cyber-cyan: #00b4d8;
+  --ifm-color-primary: #0284c7;
+  --ifm-color-primary-dark: #0369a1;
+  --ifm-color-primary-darker: #075985;
+  --ifm-color-primary-darkest: #0c4a6e;
+  --ifm-color-primary-light: #38bdf8;
+  --ifm-color-primary-lighter: #7dd3fc;
+  --ifm-color-primary-lightest: #bae6fd;
+  
+  --color-cyber-cyan: #0284c7;
   --color-cyber-crimson: #e11d48;
   --color-cyber-emerald: #059669;
-  --ifm-code-font-size: 92%;
+  --color-cyber-indigo: #4f46e5;
+  
+  --ifm-code-font-size: 90%;
   --ifm-font-family-base: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --ifm-font-family-monospace: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
   --ifm-heading-font-family: 'Space Grotesk', 'Outfit', sans-serif;
   --ifm-heading-font-weight: 700;
   --ifm-font-weight-semibold: 600;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 180, 216, 0.1);
+  
+  --docusaurus-highlighted-code-line-bg: rgba(2, 132, 199, 0.1);
   --ifm-background-color: #f8fafc;
   --ifm-background-surface-color: #ffffff;
-  --ifm-navbar-background-color: rgba(255, 255, 255, 0.85);
+  --ifm-navbar-background-color: rgba(255, 255, 255, 0.88);
   --ifm-footer-background-color: #0f172a;
-  --ifm-footer-color: #f1f5f9;
+  --ifm-footer-color: #f8fafc;
   --ifm-toc-border-color: #e2e8f0;
   --ifm-card-background-color: #ffffff;
-  --cyber-border-glow: rgba(0, 180, 216, 0.25);
-  --cyber-grid-color: rgba(15, 23, 42, 0.05);
+  --ifm-font-color-base: #0f172a;
+  
+  --cyber-border-glow: rgba(2, 132, 199, 0.2);
+  --cyber-grid-color: rgba(15, 23, 42, 0.04);
+  --navbar-link-active-bg: rgba(2, 132, 199, 0.08);
+  --navbar-link-active-border: rgba(2, 132, 199, 0.25);
+  --sidebar-active-bg: #f0f9ff;
+  --sidebar-active-text: #0284c7;
+  --sidebar-active-border: #0284c7;
 }
 
-/* Dark Mode (Cyber Obsidian & Neon Telemetry) */
+/* ==============================================================================
+   DARK MODE DESIGN SYSTEM (Obsidian & Neon Telemetry)
+   ============================================================================== */
 [data-theme='dark'] {
   --ifm-color-primary: #00f0ff;
   --ifm-color-primary-dark: #00d2e0;
@@ -46,26 +61,36 @@
   --ifm-color-primary-light: #33f3ff;
   --ifm-color-primary-lighter: #5cf5ff;
   --ifm-color-primary-lightest: #85f8ff;
+  
   --color-cyber-cyan: #00f0ff;
   --color-cyber-crimson: #ff2d55;
   --color-cyber-emerald: #00ff9d;
   --color-cyber-indigo: #6366f1;
-  --ifm-code-font-size: 92%;
+  
+  --ifm-code-font-size: 90%;
   --ifm-font-family-base: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --ifm-font-family-monospace: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
   --ifm-heading-font-family: 'Space Grotesk', 'Outfit', sans-serif;
+  
   --docusaurus-highlighted-code-line-bg: rgba(0, 240, 255, 0.12);
   --ifm-background-color: #06080f;
   --ifm-background-surface-color: #0b0f19;
-  --ifm-navbar-background-color: rgba(6, 8, 15, 0.85);
+  --ifm-navbar-background-color: rgba(6, 8, 15, 0.88);
   --ifm-footer-background-color: #030408;
   --ifm-toc-border-color: #1a2234;
   --ifm-card-background-color: #0e1422;
+  --ifm-font-color-base: #f8fafc;
+  
   --cyber-border-glow: rgba(0, 240, 255, 0.35);
   --cyber-grid-color: rgba(0, 240, 255, 0.04);
+  --navbar-link-active-bg: rgba(0, 240, 255, 0.12);
+  --navbar-link-active-border: rgba(0, 240, 255, 0.35);
+  --sidebar-active-bg: rgba(0, 240, 255, 0.1);
+  --sidebar-active-text: #00f0ff;
+  --sidebar-active-border: #00f0ff;
 }
 
-/* Global Typography & Reset */
+/* Global Reset & Typography */
 html {
   font-size: 16px;
   font-family: var(--ifm-font-family-base);
@@ -76,12 +101,13 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--ifm-heading-font-family);
   font-weight: 700;
   letter-spacing: -0.02em;
+  color: var(--ifm-font-color-base);
 }
 
-/* Modern Cyber Scrollbar */
+/* Custom Scrollbars */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
 }
 
 ::-webkit-scrollbar-track {
@@ -89,59 +115,70 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1e293b;
+  background: #cbd5e1;
   border-radius: 4px;
 }
 
 [data-theme='dark'] ::-webkit-scrollbar-thumb {
   background: #1a233a;
-  border: 1px solid rgba(0, 240, 255, 0.2);
+  border: 1px solid rgba(0, 240, 255, 0.15);
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--ifm-color-primary);
 }
 
-/* High-Tech Glassmorphism Navbar */
+/* ==============================================================================
+   NAVBAR (Refined Glassmorphism)
+   ============================================================================== */
 .navbar {
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   background-color: var(--ifm-navbar-background-color) !important;
   border-bottom: 1px solid var(--ifm-toc-border-color);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
-  transition: all 0.3s ease;
-  height: 64px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+  transition: all 0.25s ease;
+  height: 60px;
   padding: 0 1.5rem;
+}
+
+[data-theme='dark'] .navbar {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
 }
 
 .navbar__brand {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.6rem;
   margin-right: 2rem;
 }
 
 .navbar__title {
   font-family: 'Space Grotesk', sans-serif;
-  font-weight: 700;
-  font-size: 0.95rem;
+  font-weight: 800;
+  font-size: 1.05rem;
   letter-spacing: 0.1em;
-  color: var(--ifm-font-color-base);
-  background: linear-gradient(135deg, #ffffff 0%, #00f0ff 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
   text-transform: uppercase;
+  color: #0f172a;
 }
 
-[data-theme='light'] .navbar__title {
-  background: linear-gradient(135deg, #0f172a 0%, #0088cc 100%);
+[data-theme='dark'] .navbar__title {
+  color: #f8fafc;
+  background: linear-gradient(135deg, #ffffff 0%, #00f0ff 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .navbar__logo {
   height: 28px;
-  filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.4));
+  width: 28px;
+  display: flex;
+  align-items: center;
+}
+
+.navbar__logo img {
+  height: 28px;
+  width: 28px;
 }
 
 .navbar__items {
@@ -150,68 +187,72 @@ h1, h2, h3, h4, h5, h6 {
 
 .navbar__link {
   font-family: var(--ifm-font-family-base);
-  font-size: 0.875rem;
+  font-size: 0.85rem;
   font-weight: 600;
-  letter-spacing: 0.02em;
-  padding: 0.45rem 0.85rem;
+  letter-spacing: 0.01em;
+  padding: 0.4rem 0.85rem;
   border-radius: 8px;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
   color: var(--ifm-color-emphasis-700);
 }
 
 .navbar__link:hover {
   color: var(--ifm-color-primary);
-  background: rgba(0, 240, 255, 0.08);
+  background: var(--navbar-link-active-bg);
 }
 
 .navbar__link--active {
-  color: var(--ifm-color-primary) !important;
-  background: rgba(0, 240, 255, 0.12);
-  border: 1px solid rgba(0, 240, 255, 0.3);
-  box-shadow: 0 0 12px rgba(0, 240, 255, 0.15);
+  color: var(--sidebar-active-text) !important;
+  background: var(--navbar-link-active-bg);
+  border: 1px solid var(--navbar-link-active-border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
-/* Header GitHub Link with Cyber Polish */
+/* Header GitHub Link */
 .header-github-link {
   display: inline-flex;
   align-items: center;
   font-family: var(--ifm-font-family-monospace);
-  font-size: 0.8rem;
+  font-size: 0.78rem;
+  font-weight: 600;
   padding: 0.35rem 0.75rem !important;
   border: 1px solid var(--ifm-toc-border-color);
   border-radius: 6px;
+  background: var(--ifm-background-surface-color);
 }
 
-/* Sidebar Cybernetic Styles */
+/* ==============================================================================
+   SIDEBAR
+   ============================================================================== */
 .theme-doc-sidebar-container {
   background-color: var(--ifm-background-surface-color);
   border-right: 1px solid var(--ifm-toc-border-color);
 }
 
 .menu__list {
-  padding: 0.75rem;
+  padding: 0.85rem 0.65rem;
   gap: 2px;
 }
 
 .menu__link {
-  font-size: 0.875rem;
+  font-size: 0.85rem;
   font-weight: 500;
   border-radius: 6px;
-  padding: 0.5rem 0.75rem;
+  padding: 0.45rem 0.75rem;
   transition: all 0.15s ease;
   color: var(--ifm-color-emphasis-700);
 }
 
 .menu__link:hover {
   color: var(--ifm-color-primary);
-  background: rgba(0, 240, 255, 0.06);
+  background: var(--navbar-link-active-bg);
 }
 
 .menu__link--active {
   font-weight: 600;
-  color: var(--ifm-color-primary) !important;
-  background: rgba(0, 240, 255, 0.1) !important;
-  border-left: 2px solid var(--ifm-color-primary);
+  color: var(--sidebar-active-text) !important;
+  background: var(--sidebar-active-bg) !important;
+  border-left: 2px solid var(--sidebar-active-border);
 }
 
 .menu__list-item-collapsible {
@@ -219,17 +260,23 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .menu__list-item-collapsible:hover {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+[data-theme='dark'] .menu__list-item-collapsible:hover {
   background: rgba(255, 255, 255, 0.03);
 }
 
-/* Table of Contents */
+/* ==============================================================================
+   TABLE OF CONTENTS (TOC)
+   ============================================================================== */
 .table-of-contents {
   border-left: 1px solid var(--ifm-toc-border-color);
   padding: 0.5rem 0 0.5rem 1rem;
 }
 
 .table-of-contents__link {
-  font-size: 0.825rem;
+  font-size: 0.82rem;
   color: var(--ifm-color-emphasis-600);
   transition: color 0.15s ease;
 }
@@ -252,28 +299,34 @@ h1, h2, h3, h4, h5, h6 {
   font-size: 8px;
 }
 
-/* High-Tech Terminal Code Blocks */
+/* ==============================================================================
+   TERMINAL CODE BLOCKS (Both Light & Dark)
+   ============================================================================== */
 div[class*='codeBlockContainer'] {
   border: 1px solid var(--ifm-toc-border-color);
   border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
   background: #090d16 !important;
   overflow: hidden;
   position: relative;
   margin: 1.5rem 0;
 }
 
+[data-theme='dark'] div[class*='codeBlockContainer'] {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
 div[class*='codeBlockContainer']::before {
   content: '';
   display: block;
-  height: 28px;
+  height: 26px;
   background: #0d1320;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   background-image: radial-gradient(circle, #ff5f56 4px, transparent 4.5px),
                     radial-gradient(circle, #ffbd2e 4px, transparent 4.5px),
                     radial-gradient(circle, #27c93f 4px, transparent 4.5px);
-  background-size: 16px 16px;
-  background-position: 12px 6px, 28px 6px, 44px 6px;
+  background-size: 15px 15px;
+  background-position: 12px 5px, 27px 5px, 42px 5px;
   background-repeat: no-repeat;
 }
 
@@ -282,22 +335,29 @@ pre {
   background: transparent !important;
   font-family: var(--ifm-font-family-monospace);
   padding: 1rem 1.25rem !important;
+  color: #f1f5f9 !important;
 }
 
-/* Telemetry Admonitions (HUD Callouts) - Pure SVG, Zero Informal Emojis */
+/* ==============================================================================
+   ADMONITIONS (Telemetry HUD Callouts - Zero Emojis)
+   ============================================================================== */
 .admonition {
   border: 1px solid var(--ifm-toc-border-color);
   border-left-width: 4px;
   border-radius: 10px;
   background: var(--ifm-background-surface-color);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
   margin: 1.5rem 0;
   padding: 1rem 1.25rem;
 }
 
+[data-theme='dark'] .admonition {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
 .admonition-heading {
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   font-weight: 700;
@@ -308,106 +368,129 @@ pre {
 }
 
 .admonition-info {
+  border-left-color: #0284c7;
+  background: rgba(2, 132, 199, 0.04);
+}
+
+.admonition-info .admonition-heading {
+  color: #0284c7;
+}
+
+[data-theme='dark'] .admonition-info {
   border-left-color: #00f0ff;
   background: rgba(0, 240, 255, 0.04);
 }
 
-.admonition-info .admonition-heading {
+[data-theme='dark'] .admonition-info .admonition-heading {
   color: #00f0ff;
 }
 
 .admonition-tip {
+  border-left-color: #059669;
+  background: rgba(5, 150, 105, 0.04);
+}
+
+.admonition-tip .admonition-heading {
+  color: #059669;
+}
+
+[data-theme='dark'] .admonition-tip {
   border-left-color: #00ff9d;
   background: rgba(0, 255, 157, 0.04);
 }
 
-.admonition-tip .admonition-heading {
+[data-theme='dark'] .admonition-tip .admonition-heading {
   color: #00ff9d;
 }
 
 .admonition-warning {
+  border-left-color: #d97706;
+  background: rgba(217, 119, 6, 0.04);
+}
+
+.admonition-warning .admonition-heading {
+  color: #d97706;
+}
+
+[data-theme='dark'] .admonition-warning {
   border-left-color: #ffd166;
   background: rgba(255, 209, 102, 0.04);
 }
 
-.admonition-warning .admonition-heading {
+[data-theme='dark'] .admonition-warning .admonition-heading {
   color: #ffd166;
 }
 
 .admonition-danger,
 .admonition-caution {
-  border-left-color: #ff2d55;
-  background: rgba(255, 45, 85, 0.04);
+  border-left-color: #e11d48;
+  background: rgba(225, 29, 72, 0.04);
 }
 
 .admonition-danger .admonition-heading,
 .admonition-caution .admonition-heading {
+  color: #e11d48;
+}
+
+[data-theme='dark'] .admonition-danger,
+[data-theme='dark'] .admonition-caution {
+  border-left-color: #ff2d55;
+  background: rgba(255, 45, 85, 0.04);
+}
+
+[data-theme='dark'] .admonition-danger .admonition-heading,
+[data-theme='dark'] .admonition-caution .admonition-heading {
   color: #ff2d55;
 }
 
-/* Markdown Documentation Page Styling */
+/* ==============================================================================
+   DOCS CONTENT & TYPOGRAPHY
+   ============================================================================== */
 .theme-doc-markdown {
   max-width: 860px;
 }
 
 .theme-doc-markdown h1 {
-  font-size: 2.25rem;
+  font-size: 2.2rem;
   margin-bottom: 1.5rem;
+  color: var(--ifm-font-color-base);
+}
+
+[data-theme='dark'] .theme-doc-markdown h1 {
   background: linear-gradient(135deg, #ffffff 0%, #94a3b8 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-[data-theme='light'] .theme-doc-markdown h1 {
-  background: linear-gradient(135deg, #0f172a 0%, #475569 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
 .theme-doc-markdown h2 {
-  font-size: 1.5rem;
+  font-size: 1.45rem;
   margin-top: 2rem;
   padding-bottom: 0.5rem;
   border-bottom: 1px solid var(--ifm-toc-border-color);
 }
 
 .theme-doc-markdown h3 {
-  font-size: 1.2rem;
+  font-size: 1.15rem;
   margin-top: 1.5rem;
 }
 
-/* Background Atmosphere Glows */
-.main-wrapper:has(.docs-wrapper)::before,
-.main-wrapper:has([class*="docMainContainer"])::before {
+/* Ambient Atmosphere for Docs */
+[data-theme='dark'] .main-wrapper:has(.docs-wrapper)::before,
+[data-theme='dark'] .main-wrapper:has([class*="docMainContainer"])::before {
   content: '';
   position: fixed;
   top: 5%;
   left: 10%;
   width: 500px;
   height: 500px;
-  background: radial-gradient(circle, rgba(0, 240, 255, 0.08) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(0, 240, 255, 0.06) 0%, transparent 70%);
   border-radius: 50%;
   filter: blur(100px);
   pointer-events: none;
   z-index: -1;
 }
 
-.main-wrapper:has(.docs-wrapper)::after,
-.main-wrapper:has([class*="docMainContainer"])::after {
-  content: '';
-  position: fixed;
-  bottom: 5%;
-  right: 10%;
-  width: 450px;
-  height: 450px;
-  background: radial-gradient(circle, rgba(255, 45, 85, 0.06) 0%, transparent 70%);
-  border-radius: 50%;
-  filter: blur(80px);
-  pointer-events: none;
-  z-index: -1;
-}
-
-/* Cyber Footer */
+/* Footer */
 .footer {
   background-color: var(--ifm-footer-background-color);
   border-top: 1px solid var(--ifm-toc-border-color);
@@ -418,28 +501,36 @@ pre {
   font-family: 'Space Grotesk', sans-serif;
   font-size: 0.85rem;
   letter-spacing: 0.1em;
-  color: var(--ifm-color-primary);
+  color: #38bdf8;
   text-transform: uppercase;
   margin-bottom: 1rem;
 }
 
+[data-theme='dark'] .footer__title {
+  color: var(--ifm-color-primary);
+}
+
 .footer__link-item {
-  font-size: 0.875rem;
-  color: var(--ifm-color-emphasis-600);
+  font-size: 0.85rem;
+  color: #94a3b8;
   transition: all 0.2s ease;
 }
 
 .footer__link-item:hover {
-  color: var(--ifm-color-primary);
+  color: #38bdf8;
   text-decoration: none;
   transform: translateX(4px);
+}
+
+[data-theme='dark'] .footer__link-item:hover {
+  color: var(--ifm-color-primary);
 }
 
 .footer__copyright {
   font-family: var(--ifm-font-family-monospace);
   font-size: 0.75rem;
-  color: var(--ifm-color-emphasis-500);
+  color: #64748b;
   margin-top: 3rem;
   padding-top: 1.5rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
 }

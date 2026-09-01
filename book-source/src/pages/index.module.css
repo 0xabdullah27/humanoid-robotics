@@ -136,6 +136,12 @@
   box-shadow: 0 0 16px rgba(0, 240, 255, 0.15);
 }
 
+[data-theme='light'] .statusPill {
+  background: rgba(2, 132, 199, 0.06);
+  border-color: rgba(2, 132, 199, 0.25);
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.08);
+}
+
 .statusDot {
   width: 8px;
   height: 8px;
@@ -190,6 +196,13 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   filter: drop-shadow(0 0 25px rgba(0, 240, 255, 0.45));
+}
+
+[data-theme='light'] .neonHighlight {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 60%, #059669 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: none;
 }
 
 .heroSubtitle {
@@ -453,6 +466,12 @@
   margin-bottom: 1.25rem;
 }
 
+[data-theme='light'] .sectionBadge {
+  background: rgba(2, 132, 199, 0.08);
+  border-color: rgba(2, 132, 199, 0.25);
+  color: #0284c7;
+}
+
 .sectionTitle {
   font-family: var(--font-heading);
   font-size: clamp(2rem, 3.5vw, 2.75rem);
@@ -503,6 +522,12 @@
   overflow: hidden;
 }
 
+[data-theme='light'] .pillarCard {
+  background: #ffffff;
+  border-color: #e2e8f0;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+}
+
 .pillarCard::before {
   content: '';
   position: absolute;
@@ -520,6 +545,10 @@
   border-color: var(--pillar-accent);
   transform: translateY(-4px);
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4), 0 0 25px rgba(0, 240, 255, 0.1);
+}
+
+[data-theme='light'] .pillarCard:hover {
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
 }
 
 .pillarCard:hover::before {
@@ -546,6 +575,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+[data-theme='light'] .pillarIndexBadge {
+  background: #f1f5f9;
+  border-color: #e2e8f0;
 }
 
 .pillarTag {
@@ -665,9 +699,19 @@
   transition: all 0.25s ease;
 }
 
+[data-theme='light'] .flowCard {
+  background: #ffffff;
+  border-color: #e2e8f0;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+}
+
 .flowCard:hover {
   border-color: var(--cyber-cyan);
   box-shadow: 0 10px 30px rgba(0, 240, 255, 0.1);
+}
+
+[data-theme='light'] .flowCard:hover {
+  box-shadow: 0 10px 25px rgba(2, 132, 199, 0.1);
 }
 
 .flowIconBox {
@@ -680,6 +724,11 @@
   align-items: center;
   justify-content: center;
   margin-bottom: 1.25rem;
+}
+
+[data-theme='light'] .flowIconBox {
+  background: rgba(2, 132, 199, 0.08);
+  color: #0284c7;
 }
 
 .flowStepNum {
@@ -714,6 +763,11 @@
   padding: 0.6rem 0.8rem;
 }
 
+[data-theme='light'] .flowCode {
+  background: #f1f5f9;
+  border-color: #e2e8f0;
+}
+
 .flowCode code {
   font-family: var(--font-mono);
   font-size: 0.72rem;
@@ -723,6 +777,10 @@
   display: block;
   white-space: pre-wrap;
   word-break: break-all;
+}
+
+[data-theme='light'] .flowCode code {
+  color: #0369a1;
 }
 
 .flowConnector {
@@ -771,10 +829,20 @@
   transition: all 0.25s ease;
 }
 
+[data-theme='light'] .featureCard {
+  background: #ffffff;
+  border-color: #e2e8f0;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+}
+
 .featureCard:hover {
   border-color: var(--cyber-cyan);
   transform: translateY(-4px);
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme='light'] .featureCard:hover {
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
 }
 
 .featureIconWrap {
@@ -787,6 +855,11 @@
   align-items: center;
   justify-content: center;
   margin-bottom: 1.25rem;
+}
+
+[data-theme='light'] .featureIconWrap {
+  background: rgba(2, 132, 199, 0.08);
+  color: #0284c7;
 }
 
 .featureTitle {
@@ -832,6 +905,12 @@
   border: 1px solid var(--cyber-border);
   border-radius: 16px;
   padding: 2.25rem;
+}
+
+[data-theme='light'] .prereqCard {
+  background: #ffffff;
+  border-color: #e2e8f0;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
 }
 
 .prereqHeader {

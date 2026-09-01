@@ -73,9 +73,9 @@ const config: Config = {
       respectPrefersColorScheme: true,
     },
     navbar: {
-      title: 'VECTRA // PHYSICAL AI',
+      title: 'VECTRA',
       logo: {
-        alt: 'Vectra Physical AI Logo',
+        alt: 'Vectra Physical AI',
         src: 'img/logo.svg',
       },
       items: [
