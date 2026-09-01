@@ -336,6 +336,59 @@ pre {
   font-family: var(--ifm-font-family-monospace);
   padding: 1rem 1.25rem !important;
   color: #f1f5f9 !important;
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+
+/* High-Contrast Syntax Highlighting Tokens for Terminal Blocks */
+.token.keyword,
+.token.tag,
+.token.boolean,
+.token.constant,
+.token.builtin {
+  color: #ff79c6 !important;
+  font-weight: 600;
+}
+
+.token.string,
+.token.char,
+.token.attr-value {
+  color: #50fa7b !important;
+}
+
+.token.function,
+.token.class-name,
+.token.symbol {
+  color: #8be9fd !important;
+  font-weight: 600;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  color: #94a3b8 !important;
+  font-style: italic;
+}
+
+.token.number {
+  color: #bd93f9 !important;
+}
+
+.token.operator,
+.token.entity,
+.token.url {
+  color: #ff79c6 !important;
+}
+
+.token.property,
+.token.attr-name,
+.token.variable {
+  color: #f1fa8c !important;
+}
+
+.token.punctuation {
+  color: #cbd5e1 !important;
 }
 
 /* ==============================================================================
