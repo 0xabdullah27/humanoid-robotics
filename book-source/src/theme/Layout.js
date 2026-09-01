@@ -7,10 +7,8 @@ export default function Layout(props) {
     <>
       <OriginalLayout {...props}>
         {props.children}
-        ther eis the chat widget
       </OriginalLayout>
       <ChatWidget />
-        ther eis the chat widge2
     </>
   );
 }
