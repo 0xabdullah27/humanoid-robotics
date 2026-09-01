@@ -36,24 +36,24 @@ export function getQdrantClient(): QdrantClient | null {
 
 export const COLLECTION_NAME = process.env.QDRANT_COLLECTION_NAME || 'book_content';
 
-/**
- * Ensures the target vector collection exists with 1024-dim Cosine configuration
- */
-export async function ensureCollection(vectorSize = 1024): Promise<boolean> {
+export async function ensureCollection(
+  collectionName: string = COLLECTION_NAME,
+  vectorSize: number = 1024
+): Promise<boolean> {
   const client = getQdrantClient();
   if (!client) return false;
 
   try {
-    const status = await client.collectionExists(COLLECTION_NAME);
+    const status = await client.collectionExists(collectionName);
 
     if (!status.exists) {
-      await client.createCollection(COLLECTION_NAME, {
+      await client.createCollection(collectionName, {
         vectors: {
           size: vectorSize,
           distance: 'Cosine',
         },
       });
-      console.log(`[Qdrant] Created collection ${COLLECTION_NAME}`);
+      console.log(`[Qdrant] Created collection ${collectionName}`);
     }
     return true;
   } catch (error) {

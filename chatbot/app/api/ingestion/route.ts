@@ -87,6 +87,13 @@ export async function POST(req: NextRequest) {
     }
 
     const client = getQdrantClient();
+    if (!client) {
+      return NextResponse.json(
+        { error: 'Qdrant is not configured. Please set QDRANT_URL and QDRANT_API_KEY in .env.local.' },
+        { status: 500 }
+      );
+    }
+
     const collectionName = process.env.QDRANT_COLLECTION_NAME || 'book_content';
     await ensureCollection(collectionName, 1024);
 
