@@ -2,8 +2,34 @@ import { NextRequest, NextResponse } from 'next/server';
 import { embedQuery } from '@/lib/embeddings';
 import { searchVector, RetrievedChunk } from '@/lib/qdrant';
 import { generateRAGAnswer, ConversationMessage } from '@/lib/llm';
+import { getCorsHeaders, handleOptions } from '@/lib/cors';
+import { checkRateLimit } from '@/lib/rateLimit';
+
+export async function OPTIONS(req: NextRequest) {
+  return handleOptions(req);
+}
 
 export async function POST(req: NextRequest) {
+  const corsHeaders = getCorsHeaders(req);
+
+  // 1. IP Rate Limiting (default 20 requests / min / IP)
+  const rateLimit = checkRateLimit(req);
+  if (!rateLimit.allowed) {
+    return NextResponse.json(
+      {
+        error: 'Too many requests. Please wait before asking another question.',
+        retry_after_seconds: rateLimit.resetSeconds,
+      },
+      {
+        status: 429,
+        headers: {
+          ...corsHeaders,
+          'Retry-After': String(rateLimit.resetSeconds),
+        },
+      }
+    );
+  }
+
   try {
     const body = await req.json();
     const { messages, question, context, selected_text, content_selection } = body;
@@ -21,7 +47,7 @@ export async function POST(req: NextRequest) {
     } else {
       return NextResponse.json(
         { error: 'A "messages" array or "question" string is required.' },
-        { status: 400 }
+        { status: 400, headers: corsHeaders }
       );
     }
 
@@ -37,11 +63,11 @@ export async function POST(req: NextRequest) {
 
     let chunks: RetrievedChunk[] = [];
 
-    // 1. Generate embedding for the latest user question with Cohere
+    // 2. Generate embedding for the latest user question with Cohere
     if (latestQuery) {
       const queryVector = await embedQuery(latestQuery);
 
-      // 2. Search Qdrant vector database
+      // 3. Search Qdrant vector database
       if (queryVector) {
         const threshold = parseFloat(process.env.RAG_SIMILARITY_THRESHOLD || '0.5');
         const maxChunks = parseInt(process.env.RAG_MAX_CHUNKS || '6', 10);
@@ -49,21 +75,30 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // 3. Generate response with LLM passing the full conversation context
+    // 4. Generate response with LLM passing the full conversation context
     const result = await generateRAGAnswer(recentMessages, chunks, activeContext);
 
-    return NextResponse.json({
-      answer: result.answer,
-      citations: result.citations,
-      is_from_book: result.is_from_book,
-      has_disclaimer: result.has_disclaimer,
-      chunks_count: chunks.length,
-    });
+    return NextResponse.json(
+      {
+        answer: result.answer,
+        citations: result.citations,
+        is_from_book: result.is_from_book,
+        has_disclaimer: result.has_disclaimer,
+        chunks_count: chunks.length,
+      },
+      {
+        status: 200,
+        headers: {
+          ...corsHeaders,
+          'X-RateLimit-Remaining': String(rateLimit.remaining),
+        },
+      }
+    );
   } catch (error: any) {
     console.error('API /api/chat error:', error);
     return NextResponse.json(
       { error: error.message || 'Internal server error' },
-      { status: 500 }
+      { status: 500, headers: corsHeaders }
     );
   }
 }

@@ -3,6 +3,11 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { embedDocuments } from '@/lib/embeddings';
 import { getQdrantClient, ensureCollection } from '@/lib/qdrant';
+import { getCorsHeaders, handleOptions } from '@/lib/cors';
+
+export async function OPTIONS(req: NextRequest) {
+  return handleOptions(req);
+}
 
 function getMarkdownFiles(dir: string): string[] {
   let results: string[] = [];
@@ -50,15 +55,34 @@ function chunkText(content: string, maxTokens = 500, overlap = 50): string[] {
 }
 
 export async function POST(req: NextRequest) {
+  const corsHeaders = getCorsHeaders(req);
+
+  // Admin Key Protection
+  const adminKey = process.env.ADMIN_INGEST_KEY;
+  if (adminKey && adminKey.trim() !== '') {
+    const providedKey =
+      req.headers.get('x-admin-key') ||
+      req.headers.get('authorization')?.replace(/^Bearer\s+/i, '');
+    if (providedKey !== adminKey) {
+      return NextResponse.json(
+        { error: 'Unauthorized: A valid "x-admin-key" or "Authorization: Bearer <key>" is required to trigger ingestion.' },
+        { status: 401, headers: corsHeaders }
+      );
+    }
+  }
+
   try {
     const docsDir = path.resolve(process.cwd(), '../book-source/docs');
     const files = getMarkdownFiles(docsDir);
 
     if (files.length === 0) {
-      return NextResponse.json({
-        success: false,
-        message: 'No markdown documentation files found in docs directory.',
-      }, { status: 404 });
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'No markdown documentation files found in docs directory.',
+        },
+        { status: 404, headers: corsHeaders }
+      );
     }
 
     const allChunks: Array<{ id: string; source_id: string; title: string; chapter: string; section: string; text: string; file_path: string }> = [];
@@ -90,7 +114,7 @@ export async function POST(req: NextRequest) {
     if (!client) {
       return NextResponse.json(
         { error: 'Qdrant is not configured. Please set QDRANT_URL and QDRANT_API_KEY in .env.local.' },
-        { status: 500 }
+        { status: 500, headers: corsHeaders }
       );
     }
 
@@ -127,17 +151,20 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    return NextResponse.json({
-      success: true,
-      files_processed: files.length,
-      chunks_indexed: indexedCount,
-      collection: collectionName,
-    });
+    return NextResponse.json(
+      {
+        success: true,
+        files_processed: files.length,
+        chunks_indexed: indexedCount,
+        collection: collectionName,
+      },
+      { status: 200, headers: corsHeaders }
+    );
   } catch (error: any) {
     console.error('Ingestion API error:', error);
     return NextResponse.json(
       { error: error.message || 'Ingestion failed' },
-      { status: 500 }
+      { status: 500, headers: corsHeaders }
     );
   }
 }

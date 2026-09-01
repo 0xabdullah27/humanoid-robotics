@@ -1,10 +1,18 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { getQdrantClient, COLLECTION_NAME } from '@/lib/qdrant';
+import { getCorsHeaders, handleOptions } from '@/lib/cors';
 
-export async function GET() {
+export async function OPTIONS(req: NextRequest) {
+  return handleOptions(req);
+}
+
+export async function GET(req: NextRequest) {
+  const corsHeaders = getCorsHeaders(req);
+
   const qdrantConfigured = Boolean(process.env.QDRANT_URL && !process.env.QDRANT_URL.includes('your-cluster'));
   const cohereConfigured = Boolean(process.env.COHERE_API_KEY && !process.env.COHERE_API_KEY.includes('your_cohere'));
   const llmConfigured = Boolean(
+    (process.env.LLM_API_KEY && !process.env.LLM_API_KEY.includes('your_')) ||
     (process.env.OPENROUTER_API_KEY && !process.env.OPENROUTER_API_KEY.includes('your_')) ||
     (process.env.OPENAI_API_KEY && !process.env.OPENAI_API_KEY.includes('your_'))
   );
@@ -22,13 +30,16 @@ export async function GET() {
     }
   }
 
-  return NextResponse.json({
-    status: 'healthy',
-    timestamp: new Date().toISOString(),
-    services: {
-      qdrant: { configured: qdrantConfigured, status: qdrantStatus, collection: COLLECTION_NAME },
-      cohere: { configured: cohereConfigured, model: process.env.COHERE_EMBEDDING_MODEL || 'embed-english-v3.0' },
-      llm: { configured: llmConfigured, model: process.env.LLM_MODEL || 'gpt-4o-mini' },
+  return NextResponse.json(
+    {
+      status: 'healthy',
+      timestamp: new Date().toISOString(),
+      services: {
+        qdrant: { configured: qdrantConfigured, status: qdrantStatus, collection: COLLECTION_NAME },
+        cohere: { configured: cohereConfigured, model: process.env.COHERE_EMBEDDING_MODEL || 'embed-english-v3.0' },
+        llm: { configured: llmConfigured, model: process.env.LLM_MODEL || 'gpt-4o-mini' },
+      },
     },
-  });
+    { headers: corsHeaders }
+  );
 }
