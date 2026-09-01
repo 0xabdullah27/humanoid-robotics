@@ -27,26 +27,24 @@ Keep answers well-structured using markdown headings, bullet points, and code sn
 let openaiClient: OpenAI | null = null;
 
 function getOpenAIClient(): OpenAI | null {
-  const openrouterKey = process.env.OPENROUTER_API_KEY;
-  const openaiKey = process.env.OPENAI_API_KEY;
-  const apiKey = openrouterKey || openaiKey;
+  const apiKey =
+    process.env.LLM_API_KEY ||
+    process.env.OPENROUTER_API_KEY ||
+    process.env.OPENAI_API_KEY;
 
-  if (!apiKey || apiKey.includes('your_')) {
+  if (!apiKey || apiKey.trim() === '' || apiKey.includes('your_')) {
     return null;
   }
 
-  if (!openaiClient) {
-    const baseURL = openrouterKey
-      ? (process.env.LLM_API_BASE || 'https://openrouter.ai/api/v1')
-      : undefined;
+  const baseURL =
+    process.env.LLM_BASE_URL ||
+    process.env.LLM_API_BASE ||
+    (process.env.OPENROUTER_API_KEY ? 'https://openrouter.ai/api/v1' : undefined);
 
-    openaiClient = new OpenAI({
-      apiKey: apiKey,
-      baseURL: baseURL,
-    });
-  }
-
-  return openaiClient;
+  return new OpenAI({
+    apiKey: apiKey.trim(),
+    baseURL: baseURL?.trim() || undefined,
+  });
 }
 
 export interface ConversationMessage {
