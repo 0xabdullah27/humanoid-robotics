@@ -5,6 +5,16 @@
 
 ---
 
+## App Previews
+
+### 🌐 Landing Page & Curriculum Hub
+![VECTRA Landing Page](docs/images/landing.png)
+
+### 📖 Interactive Book Reader & AI Copilot
+![VECTRA Book Reader Interface](docs/images/book.png)
+
+---
+
 ## Architecture Overview
 
 ```
@@ -98,6 +108,8 @@ human-robotics-book/
 │   ├── app/                   # API routes (`/api/chat`, `/api/health`)
 │   ├── lib/                   # Qdrant, embeddings, rate-limiter, CORS
 │   └── scripts/ingest.ts      # Documentation vectorization pipeline
+├── docs/                      # Screenshots and documentation assets
+│   └── images/                # App UI screenshots (landing.png, book.png)
 └── specs/                     # Architecture & feature specifications
 ```
 
